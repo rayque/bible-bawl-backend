@@ -1,0 +1,4 @@
+#import Usuario, Perfilrs from 'usuario.graphql';
+type Query {
+    ola: String
+}
