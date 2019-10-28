@@ -1,0 +1,17 @@
+{
+  "name": "biblebawl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "author": "Rayque Oliveira",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.9.7",
+    "graphql": "^14.5.8",
+    "nodemon": "^1.19.4"
+  }
+}
