@@ -1,0 +1,4 @@
+#import Usuario, Perfil from 'usuario.graphql';
+type Query {
+    perfil: Perfil
+}
