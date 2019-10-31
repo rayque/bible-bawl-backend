@@ -8,26 +8,43 @@ const server = new ApolloServer({
   resolvers
 });
 
+server
+  .listen()
+  .then(({ url }) => {
+    const { User } = require('./models');
 
-const { sequelize } = require('./models');
-sequelize
-  .sync()
-  .then(() => {
-
-    server
-      .listen()
-      .then(({ url }) => {
-        const { User } = require('./models');
-
-        User.create({ name: 'Claudio', email: 'claudio@rocketseat.com.br', password: '123456' });
-        console.log(`Executando em ${url}`);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // User.create({ name: 'Claudio', email: 'claudio@rocketseat.com.br', password: '123456' });
+    console.log("---------------------");
+    console.log(`Executando em ${url}`);
+    console.log("---------------------");
   })
   .catch(err => {
     console.log(err);
   });
+
+
+
+// const { sequelize } = require('./models');
+// sequelize
+//   .sync()
+//   .then(() => {
+
+//     server
+//       .listen()
+//       .then(({ url }) => {
+//         const { User } = require('./models');
+
+//         User.create({ nome: 'Claudio', email: 'claudio@rocketseat.com.br', password: '123456' });
+//         console.log("---------------------");
+//         console.log(`Executando em ${url}`);
+//         console.log("---------------------");
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
 
 
