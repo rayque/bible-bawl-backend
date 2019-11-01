@@ -2,6 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const Perfil = sequelize.define('Perfil', {
       nome: DataTypes.STRING,
       descricao: DataTypes.STRING,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     },
     {
       freezeTableName: true,
