@@ -1,7 +1,7 @@
 
 module.exports  = (sequelize, DataTypes) => {
   const PerfilUsuario = sequelize.define('PerfilUsuario', {
-    userId: {
+    usuario_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -9,7 +9,7 @@ module.exports  = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    groupId: {
+    perfil_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
