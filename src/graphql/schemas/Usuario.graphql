@@ -8,7 +8,4 @@ type Usuario {
     id: Int
     nome: String!
     email: String
-    # idade: Int
-    # Perfil: Perfil
 }
-

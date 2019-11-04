@@ -1,15 +1,13 @@
 function participantes(){
   let membros = [];
 
-  for (let i = 1; i <= 4; i++) {
-    const equipeId = i;
-    const equipeNome
+  for (let equipe = 1; equipe <= 4; equipe++) {
 
-    for (let i = 1; i <=  4; i++) {
+    for (let participante = 1; participante <=  4; participante++) {
       const membro = {
-        nome: `Participante ${i}`,
+        nome: `Participante ${participante} [equipe ${equipe}]`,
         data_nascimento: new Date(),
-        equipe_id: equipeId,
+        equipe_id: equipe,
         createdAt: new Date(),
         updatedAt: new Date()
       };

@@ -1,4 +1,5 @@
 type Query {
     perfil: Perfil
-    usuarios: [Usuario]!
+    getUsuarios: [Usuario]!
+    getRespondedores: [Respondedor]!
 }
