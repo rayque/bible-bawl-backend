@@ -1,0 +1,10 @@
+type Participante {
+    id: Int
+    nome: String!
+    data_nascimento: String!
+}
+
+input ParticipanteInput {
+    nome: String
+    data_nascimento: String
+}
