@@ -1,6 +1,3 @@
-#import Usuario, Perfil from 'usuario.graphql';
-type Query {
-    perfil: Perfil
-    usuarios: [Usuario]!
-}
+#import Usuario, Perfil from 'Usuario.graphql';
+#import Query from 'Query.graphql';
 
