@@ -1,4 +1,4 @@
-const {Respondedor} = require('./../../models')
+const {Respondedor} = require('./../../../models')
 module.exports = {
   getRespondedores() {
     return Respondedor
