@@ -10,6 +10,7 @@ module.exports = {
       nome: {
         allowNull: false,
         type: DataTypes.STRING,
+        unique: true
       },
       cod_acesso: {
         allowNull: true,

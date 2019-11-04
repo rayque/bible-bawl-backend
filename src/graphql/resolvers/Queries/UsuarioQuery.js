@@ -14,7 +14,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        console.log(err);
+        throw new Error("Erro ao buscar usuários");
       })
   }
 }

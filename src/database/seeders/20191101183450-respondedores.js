@@ -3,13 +3,13 @@ module.exports = {
     [
       {
         nome: 'Gus Fring',
-        cod_acesso: '123',
+        cod_acesso: Math.floor(Math.random() * 100000) + 100000,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         nome: 'Mike Ehrmantraut',
-        cod_acesso: '2019',
+        cod_acesso: Math.floor(Math.random() * 100000) + 100000,
         createdAt: new Date(),
         updatedAt: new Date()
       }
