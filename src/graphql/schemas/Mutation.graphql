@@ -1,4 +1,5 @@
 type Mutation {
     novoRespondedor(nome: String!): Respondedor
     novoParticipante(dados: [ParticipanteInput]): [Participante]
+    novaEquipe(dados: [ParticipanteInput]): Equipe
 }

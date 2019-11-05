@@ -1,5 +1,6 @@
 module.exports = {
   ...require('./Mutations/RespondedorMutation'),
-  ...require('./Mutations/Participante')
+  ...require('./Mutations/ParticipanteMutation'),
+  ...require('./Mutations/EquipeMutation')
 }
 

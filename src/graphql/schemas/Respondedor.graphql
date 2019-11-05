@@ -1,5 +1,5 @@
 type Respondedor {
-    id: Int
+    id: Int!
     nome: String!
     cod_acesso: String
 }

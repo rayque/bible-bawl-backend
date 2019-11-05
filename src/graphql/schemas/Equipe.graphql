@@ -1,0 +1,10 @@
+type Equipe {
+    id: Int!
+    nome: String!
+    participantes: [Participante!]!
+}
+
+
+input EquipeInput {
+    participantes: [ParticipanteInput]
+}

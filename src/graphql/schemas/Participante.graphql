@@ -1,10 +1,10 @@
 type Participante {
-    id: Int
+    id: Int!
     nome: String!
     data_nascimento: String!
 }
 
 input ParticipanteInput {
-    nome: String
-    data_nascimento: String
+    nome: String!
+    data_nascimento: String!
 }
