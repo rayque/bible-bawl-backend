@@ -29,8 +29,8 @@ const server = new ApolloServer({
 
 const { sequelize } = require('./models');
 sequelize
-  // .sync({force: true})
-  .sync()
+  .sync({force: true})
+  // .sync()
   .then(() => {
 
     server
