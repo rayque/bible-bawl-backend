@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.bulkInsert('equipes',
+  up: (queryInterface) => queryInterface.bulkInsert('equipes',
     [
       {
         nome: 'Equipe 1',

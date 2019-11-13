@@ -13,7 +13,7 @@ module.exports = {
 
       // Cadastro da Equipe
       const nomes = [];
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
         const words = data[i].nome.split(' ');
         nomes.push(words[0]);
       }

@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     // define the table's name
     tableName: 'equipes',
   });
-  Equipe.associate = function (models) {
+  Equipe.associate = (models) => {
     Equipe.hasMany(models.Participante, {
       foreignKey: 'equipe_id',
       as: 'participantes',

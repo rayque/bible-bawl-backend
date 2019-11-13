@@ -6,18 +6,18 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: DataTypes.DATE,
   },
   {
-    freezeTableName: true ,
+    freezeTableName: true,
     // define the table's name
     tableName: 'perfis',
   });
 
-  // Perfil.associate = (models) => {
-  //   Perfil.belongsToMany(models.Usuario, {
-  //     through: 'PerfilUsuario',
-  //     as: 'usuarios',
-  //     foreignKey: 'perfil_id'
-  //   });
-  // };
+  Perfil.associate = (models) => {
+    Perfil.belongsToMany(models.Usuario, {
+      through: 'PerfilUsuario',
+      as: 'usuarios',
+      foreignKey: 'perfil_id',
+    });
+  };
 
   return Perfil;
 };

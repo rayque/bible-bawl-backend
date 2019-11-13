@@ -9,13 +9,13 @@ module.exports = {
         throw new Error('Não há dados suficientes para salvar.');
       }
 
-      Object.keys(data).forEach((key) => {
-
-
-      });
-
-      const cod_acesso = Math.floor(Math.random() * 100000) + 100000;
-      return await ParticipanteMutation.create({ nome, cod_acesso });
+      // Object.keys(data).forEach((key) => {
+      //
+      //
+      // });
+      const nome = 'foo';
+      const codAcesso = Math.floor(Math.random() * 100000) + 100000;
+      return await ParticipanteMutation.create({ nome, codAcesso });
     } catch (e) {
       throw new Error(e);
     }

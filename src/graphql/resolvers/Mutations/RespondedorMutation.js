@@ -13,8 +13,9 @@ module.exports = {
         throw new Error('Já existe um respondedor com este nome.');
       }
 
-      const cod_acesso = Math.floor(Math.random() * 100000) + 100000;
-      return await Respondedor.create({ nome, cod_acesso });
+
+      const codAcesso = Math.floor(Math.random() * 100000) + 100000;
+      return await Respondedor.create({ nome, codAcesso });
     } catch (e) {
       throw new Error(e);
     }

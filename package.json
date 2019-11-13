@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --ext js,graphql",
-    "lint": " eslint --fix . --ext .js src"
+    "lint": "eslint --fix . --ext .js src",
+    "prepush": "npm run lint"
   },
   "author": "Rayque Oliveira",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "husky": "^3.0.9",
     "sequelize-cli": "^5.5.1"
   }
 }

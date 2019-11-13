@@ -9,7 +9,7 @@ module.exports = {
         nome: resp.nome,
         cod_acesso: resp.cod_acesso,
       })))
-      .catch((err) => {
+      .catch(() => {
         throw new Error('Erro ao buscar usuários');
       });
   },

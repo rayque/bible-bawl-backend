@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer } = require('apollo-server');
 const { importSchema } = require('graphql-import');
 const resolvers = require('./graphql/resolvers');
 
@@ -9,47 +9,32 @@ const server = new ApolloServer({
 });
 
 
-// server
-//   .listen()
-//   .then(({ url }) => {
-//
-//     console.log("---------------------");
-//     console.log(`Executando em ${url}`);
-//     console.log("---------------------");
+server.listen();
+
+
+// const { sequelize } = require('./models');
+// sequelize
+//   .sync({ force: true })
+//   // .sync()
+//   .then(() => {
+//     server
+//       .listen()
+//       // .then(({ url }) => {
+//       .then(() => {
+//         // console.log('---------------------');
+//         // console.log(`Executando em ${url}`);
+//         // console.log('---------------------');
+//       })
+//       .catch((err) => {
+//         // console.log('......................');
+//         // console.log('Server error');
+//         // console.log('......................');
+//         // console.log(err);
+//       });
 //   })
-//   .catch(err => {
-//
-//     console.log("......................");
-//     console.log(`Server error`);
-//     console.log("......................");
-//     console.log(err);
-//
+//   .catch((err) => {
+//     // console.log('......................');
+//     // console.log('Sequelize error');
+//     // console.log('......................');
+//     // console.log(err);
 //   });
-
-
-const { sequelize } = require('./models');
-
-sequelize
-  .sync({ force: true })
-  // .sync()
-  .then(() => {
-    server
-      .listen()
-      .then(({ url }) => {
-        console.log('---------------------');
-        console.log(`Executando em ${url}`);
-        console.log('---------------------');
-      })
-      .catch((err) => {
-        console.log('......................');
-        console.log('Server error');
-        console.log('......................');
-        console.log(err);
-      });
-  })
-  .catch((err) => {
-    console.log('......................');
-    console.log('Sequelize error');
-    console.log('......................');
-    console.log(err);
-  });

@@ -5,7 +5,7 @@ const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync(password, salt);
 
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.bulkInsert('usuarios',
+  up: (queryInterface) => queryInterface.bulkInsert('usuarios',
     [
       {
         nome: 'Rayque Oliveira',

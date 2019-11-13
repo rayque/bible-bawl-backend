@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'participantes',
   });
 
-  Participante.associate = function (models) {
+  Participante.associate = (models) => {
     Participante.belongsTo(models.Equipe, {
       foreignKey: 'equipe_id',
     });
