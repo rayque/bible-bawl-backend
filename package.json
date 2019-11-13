@@ -5,7 +5,8 @@
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --ext js,graphql"
+    "dev": "nodemon --ext js,graphql",
+    "lint": " eslint --fix . --ext .js src"
   },
   "author": "Rayque Oliveira",
   "license": "ISC",
@@ -19,6 +20,9 @@
     "sequelize": "^5.21.2"
   },
   "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "sequelize-cli": "^5.5.1"
   }
 }

@@ -12,7 +12,7 @@ module.exports = {
         email: 'rayque@email.com',
         password: hash,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         nome: 'Walter White',
@@ -20,8 +20,8 @@ module.exports = {
         password: hash,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ], {}),
 
   down: (queryInterface) => queryInterface.bulkDelete('usuarios', null, {}),
-}
+};

@@ -1,4 +1,4 @@
 module.exports = {
   ...require('./Queries/UsuarioQuery'),
-  ...require('./Queries/RespondedorQuery')
-}
+  ...require('./Queries/RespondedorQuery'),
+};
