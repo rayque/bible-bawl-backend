@@ -4,20 +4,20 @@ module.exports = {
       {
         nome: 'infantil',
         descricao: 'Infantil (de 6 até 12 anos)',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         nome: 'juvenil',
         descricao: 'Juvenil (de 13 até 25 anos)',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         nome: 'adulto',
         descricao: 'Adulto (acima de 25)',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
     ], {}),
 

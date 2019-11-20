@@ -4,20 +4,20 @@ module.exports = {
       {
         nome: 'adminstrador',
         descricao: 'Adminstrador',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         nome: 'apresentador',
         descricao: 'Apresentador',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
         nome: 'respondedor',
         descricao: 'Respondedor',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {}),
 

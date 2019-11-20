@@ -8,8 +8,8 @@ function participantes(){
         nome: `Participante ${participante} [equipe ${equipe}]`,
         data_nascimento: new Date(),
         equipe_id: equipe,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       };
 
       membros.push(membro);
