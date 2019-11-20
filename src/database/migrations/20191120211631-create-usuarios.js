@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, DataTypes) => {
-    return queryInterface.createTable('categorias', {
+    return queryInterface.createTable('usuarios', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,7 +12,12 @@ module.exports = {
         type: DataTypes.STRING,
         unique: true
       },
-      descricao: {
+      email: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        unique: true
+      },
+      password: {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true
@@ -29,6 +34,6 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    return queryInterface.dropTable('categorias');
+    return queryInterface.dropTable('usuarios');
   }
 };
