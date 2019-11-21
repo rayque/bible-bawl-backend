@@ -14,6 +14,14 @@ module.exports = {
       descricao: {
         type: Sequelize.STRING
       },
+      idade_min: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      idade_max: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

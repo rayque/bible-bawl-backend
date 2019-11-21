@@ -9,54 +9,54 @@ const server = new ApolloServer({
 });
 
 
-// server
-//   .listen()
-//   .then(({ url }) => {
-//
-//     console.log("---------------------");
-//     console.log(`Executando em ${url}`);
-//     console.log("---------------------");
-//   })
-//   .catch(err => {
-//
-//     console.log("......................");
-//     console.log(`Server error`);
-//     console.log("......................");
-//     console.log(err);
-//
-//   });
+server
+  .listen()
+  .then(({ url }) => {
 
-
-const { sequelize } = require('./models');
-sequelize
-  .sync({force: true})
-  // .sync()
-  .then(() => {
-
-    server
-      .listen()
-      .then(({ url }) => {
-
-        console.log("---------------------");
-        console.log(`Executando em ${url}`);
-        console.log("---------------------");
-      })
-      .catch(err => {
-
-        console.log("......................");
-        console.log(`Server error`);
-        console.log("......................");
-        console.log(err);
-
-      });
-
+    console.log("---------------------");
+    console.log(`Executando em ${url}`);
+    console.log("---------------------");
   })
   .catch(err => {
 
     console.log("......................");
-    console.log(`Sequelize error`);
+    console.log(`Server error`);
     console.log("......................");
     console.log(err);
+
   });
+
+
+// const { sequelize } = require('./models');
+// sequelize
+//   .sync({force: true})
+//   // .sync()
+//   .then(() => {
+
+//     server
+//       .listen()
+//       .then(({ url }) => {
+
+//         console.log("---------------------");
+//         console.log(`Executando em ${url}`);
+//         console.log("---------------------");
+//       })
+//       .catch(err => {
+
+//         console.log("......................");
+//         console.log(`Server error`);
+//         console.log("......................");
+//         console.log(err);
+
+//       });
+
+//   })
+//   .catch(err => {
+
+//     console.log("......................");
+//     console.log(`Sequelize error`);
+//     console.log("......................");
+//     console.log(err);
+//   });
 
 
