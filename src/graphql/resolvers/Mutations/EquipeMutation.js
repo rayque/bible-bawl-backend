@@ -5,10 +5,11 @@ const { Participante, Categoria } = require('./../../../models');
 
 async function getCategoria(participantes = []) {
   const allCategorias = [];
-  for (let i = 0; i < participantes.length; i += 1) {
-    const idade = moment().diff(participantes[i].data_nascimento, 'years');
 
-    const categoria = await Categoria.findAll({
+  for (const participante of participantes) {
+    const idade = moment().diff(participante.data_nascimento, 'years');
+
+    const categorias = await Categoria.findAll({
       where: {
         idade_min: {
           [Op.lte]: idade, // >=
@@ -17,15 +18,13 @@ async function getCategoria(participantes = []) {
           [Op.gte]: idade, // <=
         },
       },
-    })
-      .then((categorias) => {
-        if (!categorias.length) {
-          throw new Error('Não há categoria para a idade do participante.');
-        }
-        return categorias[0].id;
-      });
+    });
 
-    allCategorias.push(categoria);
+    if (!categorias.length) {
+      throw new Error('Não há categoria para a idade do participante.');
+    }
+
+    allCategorias.push(categorias[0].id);
   }
 
   const totalCategorias = Array.from(new Set(allCategorias));

@@ -8,21 +8,21 @@ const server = new ApolloServer({
   resolvers,
 });
 
-server.listen(3333);
-//
-// server
-//   .listen()
-//   .then(({ url }) => {
-//     console.log('---------------------');
-//     console.log(`Executando em ${url}`);
-//     console.log('---------------------');
-//   })
-//   .catch((err) => {
-//     console.log('......................');
-//     console.log('Server error');
-//     console.log('......................');
-//     console.log(err);
-//   });
+// server.listen();
+
+server
+  .listen()
+  .then(({ url }) => {
+    console.log('---------------------');
+    console.log(`Executando em ${url}`);
+    console.log('---------------------');
+  })
+  .catch((err) => {
+    console.log('......................');
+    console.log('Server error');
+    console.log('......................');
+    console.log(err);
+  });
 
 
 // const { sequelize } = require('./models');
