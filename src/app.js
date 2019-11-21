@@ -1,30 +1,28 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer } = require('apollo-server');
 const { importSchema } = require('graphql-import');
 const resolvers = require('./graphql/resolvers');
 
 const schemaPath = 'src/graphql/schemas/index.graphql';
 const server = new ApolloServer({
   typeDefs: importSchema(schemaPath),
-  resolvers
+  resolvers,
 });
 
-
-server
-  .listen()
-  .then(({ url }) => {
-
-    console.log("---------------------");
-    console.log(`Executando em ${url}`);
-    console.log("---------------------");
-  })
-  .catch(err => {
-
-    console.log("......................");
-    console.log(`Server error`);
-    console.log("......................");
-    console.log(err);
-
-  });
+server.listen(3333);
+//
+// server
+//   .listen()
+//   .then(({ url }) => {
+//     console.log('---------------------');
+//     console.log(`Executando em ${url}`);
+//     console.log('---------------------');
+//   })
+//   .catch((err) => {
+//     console.log('......................');
+//     console.log('Server error');
+//     console.log('......................');
+//     console.log(err);
+//   });
 
 
 // const { sequelize } = require('./models');
@@ -58,5 +56,3 @@ server
 //     console.log("......................");
 //     console.log(err);
 //   });
-
-

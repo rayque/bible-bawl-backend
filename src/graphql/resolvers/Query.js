@@ -1,4 +1,7 @@
+const usuarioQuery = require('./Queries/UsuarioQuery');
+const respondedorQuery = require('./Queries/RespondedorQuery');
+
 module.exports = {
-  ...require('./Queries/UsuarioQuery'),
-  ...require('./Queries/RespondedorQuery')
-}
+  ...usuarioQuery,
+  ...respondedorQuery,
+};

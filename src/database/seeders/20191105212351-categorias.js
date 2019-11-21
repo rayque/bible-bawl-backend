@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.bulkInsert('categorias',
+  up: (queryInterface) => queryInterface.bulkInsert('categorias',
     [
       {
         nome: 'infantil',
@@ -7,7 +7,7 @@ module.exports = {
         idade_min: 6,
         idade_max: 12,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       },
       {
         nome: 'juvenil',
@@ -15,7 +15,7 @@ module.exports = {
         idade_min: 13,
         idade_max: 25,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       },
       {
         nome: 'adulto',
@@ -23,9 +23,9 @@ module.exports = {
         idade_min: 26,
         idade_max: 99,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       },
     ], {}),
 
   down: (queryInterface) => queryInterface.bulkDelete('categorias', null, {}),
-}
+};

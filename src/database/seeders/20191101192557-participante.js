@@ -1,15 +1,14 @@
-function participantes(){
-  let membros = [];
+function participantes() {
+  const membros = [];
 
-  for (let equipe = 1; equipe <= 4; equipe++) {
-
-    for (let participante = 1; participante <=  4; participante++) {
+  for (let equipe = 1; equipe <= 4; equipe += 1) {
+    for (let participante = 1; participante <= 4; participante += 1) {
       const membro = {
         nome: `Participante ${participante} [equipe ${equipe}]`,
         data_nascimento: new Date(),
         equipe_id: equipe,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
 
       membros.push(membro);
@@ -17,11 +16,11 @@ function participantes(){
   }
 
   return membros;
-};
+}
 
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.bulkInsert('participantes',
+  up: (queryInterface) => queryInterface.bulkInsert('participantes',
     participantes(), {}),
 
   down: (queryInterface) => queryInterface.bulkDelete('participantes', null, {}),
-}
+};
