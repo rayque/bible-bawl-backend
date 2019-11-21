@@ -72,28 +72,37 @@ module.exports = {
 
 
 async function getCategoria(participantes = []){  
-  let idades = 0;
-  for (let i = 0; i < participantes.length; i++) {
-    idades = idades + moment().diff(participantes[i].data_nascimento, 'years');      
-  }  
-
-  const idadeMedia = idades / participantes.length;
-
-  return await Categoria.findAll({
-    where: {
-      idade_min: {
-        [Op.lte ]: idadeMedia, // >=
-      },
-      idade_max: {
-        [Op.gte]: idadeMedia, // <= 
-      },
-    },
-  })
-  .then(categorias => {
-     if (!categorias.length) {
-      throw new Error("Não foi possível cadastrar. Os participantes não estão na mesma categoria.");
-     }
-     return categorias[0].id;      
-  });
   
+  let categorias = [];
+  for (let i = 0; i < participantes.length; i++) {
+
+    idade =  moment().diff(participantes[i].data_nascimento, 'years');  
+    
+    const categoria = await Categoria.findAll({
+      where: {
+        idade_min: {
+          [Op.lte ]: idade, // >=
+        },
+        idade_max: {
+          [Op.gte]: idade, // <= 
+        },
+      },
+    })
+    .then(categorias => {
+      if (!categorias.length) {
+        throw new Error("Não há categoria para a idade do participante.")
+      }
+      return categorias[0].id
+    });
+
+    categorias.push(categoria)
+  } 
+  
+  const totalCategorias = Array.from(new Set(categorias))
+
+  if (totalCategorias.length != 1) {
+    throw new Error("Há participantes em categorias diferentes.")
+  }
+  
+  return categorias[0];
 }
