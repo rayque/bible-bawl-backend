@@ -14,7 +14,9 @@ module.exports = {
       }
 
       const codAcesso = Math.floor(Math.random() * 100000) + 100000;
-      return await Respondedor.create({ nome, codAcesso });
+      console.log(codAcesso);
+
+      return await Respondedor.create({ nome, cod_acesso: codAcesso });
     } catch (e) {
       throw new Error(e);
     }
