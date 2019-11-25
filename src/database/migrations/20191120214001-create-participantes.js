@@ -13,7 +13,7 @@ module.exports = {
     },
     data_nascimento: {
       allowNull: false,
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
     },
     equipe_id: {
       type: DataTypes.INTEGER,

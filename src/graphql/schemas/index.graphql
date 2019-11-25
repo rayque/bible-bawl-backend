@@ -2,6 +2,7 @@
 #import Respondedor from 'Respondedor.graphql';
 #import Participante from 'Participante.graphql';
 #import Equipe from 'Equipe.graphql';
+#import Categoria from 'Categoria.graphql';
 #import Query from 'Query.graphql';
 #import Mutation from 'Mutation.graphql';
 

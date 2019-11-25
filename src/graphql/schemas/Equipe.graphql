@@ -2,6 +2,7 @@ type Equipe {
     id: Int!
     nome: String!
     participantes: [Participante!]!
+    categoria: Categoria
 }
 
 

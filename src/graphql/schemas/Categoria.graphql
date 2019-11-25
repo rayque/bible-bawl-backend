@@ -1,0 +1,7 @@
+type Categoria {
+    id: Int!
+    nome: String!
+    descricao: String!
+    idade_min: Int!
+    idade_max: Int!
+}
