@@ -8,6 +8,12 @@ module.exports = (sequelize, DataTypes) => {
     // define the table's name
     tableName: 'respondedores',
   });
+  Respondedor.associate = (models) => {
+    Respondedor.hasMany(models.Equipe, {
+      foreignKey: 'respondedor_id',
+      as: 'equipes',
+    });
+  };
 
   return Respondedor;
 };

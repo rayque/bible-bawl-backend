@@ -15,6 +15,9 @@ module.exports = {
     categoria_id: {
       type: Sequelize.INTEGER,
     },
+    respondedor_id: {
+      type: Sequelize.INTEGER,
+    },
     created_at: {
       type: Sequelize.DATE,
       allowNull: false,

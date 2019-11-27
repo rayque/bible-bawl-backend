@@ -1,4 +1,6 @@
-const { Respondedor } = require('./../../../models');
+const { Respondedor, Equipe} = require('./../../../models');
+const { Op, Sequelize } = require('sequelize');
+const EquipeService = require("./../../../services/equipeService")
 
 module.exports = {
   async novoRespondedor(_, { nome }) {
@@ -19,4 +21,39 @@ module.exports = {
       throw new Error(e);
     }
   },
+  async setEquipesRespondedor(_, {dados}) {
+    let transaction;
+    try {
+      transaction = await Equipe.sequelize.transaction();
+      const idRespondedor  = dados.idRespondedor;
+      const idsEquipes  = dados.idsEquipes;
+
+      const result = await Equipe.update(
+        {respondedor_id: idRespondedor},
+        {where: {id: idsEquipes}},
+        { transaction }
+      );
+
+      if (!result.length) {
+        throw new Error('Não possível encontrar as equipes.');
+      }
+
+      await transaction.commit();
+
+      const respondedor = await Respondedor.findByPk(idRespondedor);
+      const equipes = await EquipeService.getEquipes(idsEquipes);
+
+      return {
+        respondedor,
+        equipes
+      };
+
+    } catch (e) {
+      if (transaction) {
+        transaction.rollback();
+      }
+      throw new Error(e);
+    }
+  },
+
 };
