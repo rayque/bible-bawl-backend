@@ -28,13 +28,23 @@ module.exports = {
       const idRespondedor  = dados.idRespondedor;
       const idsEquipes  = dados.idsEquipes;
 
-      const result = await Equipe.update(
+      const resetEquipe = await Equipe.update(
+        {respondedor_id: null},
+        {where: {respondedor_id: idRespondedor}},
+        { transaction }
+      );
+
+      if (!resetEquipe.length) {
+        throw new Error('Não possível atualizar as equipes.');
+      }
+
+      const setEquipe = await Equipe.update(
         {respondedor_id: idRespondedor},
         {where: {id: idsEquipes}},
         { transaction }
       );
 
-      if (!result.length) {
+      if (!setEquipe.length) {
         throw new Error('Não possível encontrar as equipes.');
       }
 
