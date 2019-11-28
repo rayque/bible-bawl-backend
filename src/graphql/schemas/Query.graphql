@@ -2,5 +2,6 @@ type Query {
     perfil: Perfil
     getUsuarios: [Usuario]!
     getRespondedores: [Respondedor]!
+    getRespondedor(id: Int!): Respondedor!
     getEquipes: [Equipe]!
 }
