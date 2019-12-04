@@ -13,9 +13,15 @@ module.exports = {
       },
       pergunta_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'perguntas', key: 'id' },
+        onUpdate: 'CASCADE',
       },
       partiicpante_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'participantes', key: 'id' },
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

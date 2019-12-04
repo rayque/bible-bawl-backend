@@ -6,9 +6,6 @@ module.exports = {
       .findAll({include: ['equipes']})
       .then(respondedores => {
         return respondedores.map(resp => {
-
-          console.log(resp.equipes.length);
-
           const equipes = resp.equipes.map(equipe => {
             return {
               id: equipe.id,

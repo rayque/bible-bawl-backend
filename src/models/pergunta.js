@@ -1,9 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Pergunta = sequelize.define('Pergunta', {
-    status: DataTypes.INTEGER
+    status: DataTypes.INTEGER,
+    pergunta_atual: DataTypes.INTEGER
   }, {
     freezeTableName: true,
     tableName: 'perguntas',
+    underscored: true
   });
 
   Pergunta.associate = (models) => {

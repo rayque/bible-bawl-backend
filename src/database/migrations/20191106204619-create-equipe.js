@@ -14,9 +14,15 @@ module.exports = {
     },
     categoria_id: {
       type: Sequelize.INTEGER,
+      allowNull: false,
+      references: { model: 'categorias', key: 'id' },
+      onUpdate: 'CASCADE',
     },
     respondedor_id: {
       type: Sequelize.INTEGER,
+      allowNull: false,
+      references: { model: 'respondedores', key: 'id' },
+      onUpdate: 'CASCADE',
     },
     created_at: {
       type: Sequelize.DATE,

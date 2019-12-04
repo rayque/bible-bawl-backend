@@ -81,6 +81,7 @@ module.exports = {
         data_nascimento: part.data_nascimento,
       }));
 
+
       await transaction.commit();
 
       return {

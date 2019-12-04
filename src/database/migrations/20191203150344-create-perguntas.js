@@ -11,6 +11,10 @@ module.exports = {
       allowNull: false,
       defaultValue: true
     },
+    pergunta_atual: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,

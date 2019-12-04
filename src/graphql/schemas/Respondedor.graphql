@@ -14,5 +14,3 @@ input setEquipesRespondedorInput {
     idRespondedor: Int!
     idsEquipes: [Int!]!
 }
-
-
