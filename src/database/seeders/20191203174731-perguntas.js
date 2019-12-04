@@ -1,7 +1,7 @@
 function perguntas() {
   const perguntas = [];
 
-    for (let participante = 1; participante <= 4; participante += 1) {
+    for (let participante = 1; participante <= 120; participante += 1) {
       const pergunta = {
         status: true,
         created_at: new Date(),

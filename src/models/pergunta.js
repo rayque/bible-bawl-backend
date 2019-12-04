@@ -5,5 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     tableName: 'perguntas',
   });
+
+  Pergunta.associate = (models) => {
+    Pergunta.belongsToMany(models.Participante, {
+      through: models.ParticipantePergunta,
+      foreignKey: 'pergunta_id',
+      as: 'participantes'
+    });
+  };
   return Pergunta;
 };
