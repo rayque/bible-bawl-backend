@@ -1,0 +1,5 @@
+input RespostaInput {
+    participante_id: Int!
+    pergunta_id: Int!
+    resposta: Boolean!
+}

@@ -17,20 +17,20 @@ module.exports = {
         references: { model: 'perguntas', key: 'id' },
         onUpdate: 'CASCADE',
       },
-      partiicpante_id: {
+      participante_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: 'participantes', key: 'id' },
         onUpdate: 'CASCADE',
       },
-      createdAt: {
+      created_at: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
-      }
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

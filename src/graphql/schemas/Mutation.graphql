@@ -3,4 +3,5 @@ type Mutation {
     novoParticipante(dados: [ParticipanteInput]): [Participante]
     novaEquipe(dados: [ParticipanteInput]): Equipe
     setEquipesRespondedor(dados: setEquipesRespondedorInput): EquipesRespondedor
+    setResposta(dados: RespostaInput): Boolean
 }

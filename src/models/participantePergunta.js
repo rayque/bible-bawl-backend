@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const ParticipantePergunta = sequelize.define('ParticipantePergunta', {
     resposta: DataTypes.STRING
   }, {
+    freezeTableName: true,
     tableName: 'participante_pergunta',
     underscored: true
   });
