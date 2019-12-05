@@ -28,7 +28,6 @@ module.exports = {
                 { transaction }
             );
 
-            return !!result;
 
             await transaction.commit();
 
