@@ -1,4 +1,4 @@
-const { Pergunta} = require('./../../../models');
+const { Pergunta, ParticipantePergunta} = require('./../../../models');
 const { Op, Sequelize } = require('sequelize');
 const EquipeService = require("./../../../services/equipeService")
 
