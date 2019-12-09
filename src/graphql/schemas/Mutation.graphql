@@ -4,4 +4,5 @@ type Mutation {
     novaEquipe(dados: [ParticipanteInput]): Equipe
     setEquipesRespondedor(dados: setEquipesRespondedorInput): EquipesRespondedor
     setResposta(dados: RespostaInput): Boolean
+    setPerguntaAtual(pergunta: Int): Int!
 }

@@ -1,7 +1,7 @@
 const { Respondedor } = require('./../../../models');
 
 module.exports = {
-  getRespondedores() {
+  getRespondedores(_, __, {pubsub}) {
     return Respondedor
       .findAll({include: ['equipes']})
       .then(respondedores => {

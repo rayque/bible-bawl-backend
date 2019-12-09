@@ -1,4 +1,4 @@
-const { ParticipantePergunta} = require('./../../../models');
+const { Pergunta} = require('./../../../models');
 const { Op, Sequelize } = require('sequelize');
 const EquipeService = require("./../../../services/equipeService")
 
@@ -41,4 +41,46 @@ module.exports = {
         }
     },
 
+    async setPerguntaAtual(_, {pergunta}, {pubsub}) {
+        let transaction;
+        try {
+            transaction = await Pergunta.sequelize.transaction();
+
+            await Pergunta.update(
+                {pergunta_atual: false},
+                {
+                    where: {
+                        pergunta_atual: true
+                    }
+                },
+                { transaction }
+            );
+
+
+            const result = await Pergunta.update(
+                {pergunta_atual: true},
+                {
+                    where: {
+                        id: pergunta
+                    }
+                },
+                { transaction }
+            );
+
+            await transaction.commit();
+
+            pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+                novaPerguntaAtual: pergunta
+            });
+
+
+            return pergunta;
+
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
+    }
 };

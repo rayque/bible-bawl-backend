@@ -1,11 +1,14 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server');
 const { importSchema } = require('graphql-import');
 const resolvers = require('./graphql/resolvers');
 
+const pubsub = new PubSub();
+
 const schemaPath = 'src/graphql/schemas/index.graphql';
 const server = new ApolloServer({
-  typeDefs: importSchema(schemaPath),
-  resolvers,
+    typeDefs: importSchema(schemaPath),
+    resolvers,
+    context: ({ req, res }) => ({ req, res, pubsub })
 });
 
 // server.listen();
