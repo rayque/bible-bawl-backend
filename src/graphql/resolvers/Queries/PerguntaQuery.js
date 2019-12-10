@@ -43,4 +43,51 @@ module.exports = {
             throw new Error(e);
         }
     },
+
+    async getperguntasRespondidas() {
+        try {
+            const statusRep = await StatusPergunta.findAll(
+                {
+                    where: {
+                        nome: 'respondido',
+                    }
+                }
+            );
+
+            return Pergunta
+                .findAll({
+                        where: {status_id: statusRep[0].id},
+                        include: [
+                            { association: 'status' },
+                        ]
+                    }
+                )
+                .then(perguntas => {
+                    if (!perguntas.length) {
+                        return [];
+                    }
+
+                    return perguntas.map(pergunta => {
+                        return {
+                            id: pergunta.id,
+                            pergunta_atual: pergunta.pergunta_atual,
+                            status : {
+                                id: pergunta.status.id,
+                                nome: pergunta.status.nome,
+                                descricao: pergunta.status.descricao,
+                            }
+                        }
+                    });
+                })
+                .catch(() => {
+                    throw new Error('Erro ao buscar perguntas respondidas');
+                });
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
+    },
+
 };

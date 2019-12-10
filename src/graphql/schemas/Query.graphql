@@ -6,4 +6,5 @@ type Query {
     getEquipes: [Equipe]!
     getPerguntaAtual: Int
     getPrimeiraPerguntaNaoRespondida: Int
+    getperguntasRespondidas: [Pergunta]
 }

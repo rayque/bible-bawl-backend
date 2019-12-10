@@ -14,10 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'pergunta_id',
       as: 'participantes'
     });
-    Pergunta.belongsTo(models.Participante, {
-      through: models.StatusPergunta,
+    Pergunta.belongsTo(models.StatusPergunta, {
       foreignKey: 'status_id',
-      as: 'status'
+      as: 'status',
     });
   };
   return Pergunta;

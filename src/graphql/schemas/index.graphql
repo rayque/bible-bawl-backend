@@ -4,6 +4,9 @@
 #import Equipe from 'Equipe.graphql';
 #import Categoria from 'Categoria.graphql';
 #import Resposta from 'Resposta.graphql';
+#import Pergunta from 'Pergunta.graphql';
+#import StatusPergunta from 'StatusPergunta.graphql';
+
 #import Subscription from 'Subscription.graphql';
 
 #import Query from 'Query.graphql';
