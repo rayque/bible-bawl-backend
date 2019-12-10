@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
   },
   {
     freezeTableName: true,
-    // define the table's name
     tableName: 'participantes',
   });
 

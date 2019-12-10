@@ -1,4 +1,4 @@
-const { Pergunta, ParticipantePergunta} = require('./../../../models');
+const { Pergunta, ParticipantePergunta, StatusPergunta} = require('./../../../models');
 const { Op, Sequelize } = require('sequelize');
 const EquipeService = require("./../../../services/equipeService")
 
@@ -56,9 +56,19 @@ module.exports = {
                 { transaction }
             );
 
+            const status = await StatusPergunta.findAll(
+                {
+                    where: {
+                        nome: 'respondido',
+                    }
+                },
+                { transaction });
 
             const result = await Pergunta.update(
-                {pergunta_atual: true},
+                {
+                    pergunta_atual: true,
+                    status_id: status[0].id
+                },
                 {
                     where: {
                         id: pergunta
@@ -72,7 +82,6 @@ module.exports = {
             pubsub.publish('NOVA_PERGUNTA_ATUAL', {
                 novaPerguntaAtual: pergunta
             });
-
 
             return pergunta;
 

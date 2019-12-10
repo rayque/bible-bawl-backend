@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Pergunta = sequelize.define('Pergunta', {
-    status: DataTypes.INTEGER,
+    status_id: DataTypes.INTEGER,
     pergunta_atual: DataTypes.INTEGER
   }, {
     freezeTableName: true,
@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       through: models.ParticipantePergunta,
       foreignKey: 'pergunta_id',
       as: 'participantes'
+    });
+    Pergunta.belongsTo(models.Participante, {
+      through: models.StatusPergunta,
+      foreignKey: 'status_id',
+      as: 'status'
     });
   };
   return Pergunta;

@@ -6,10 +6,11 @@ module.exports = {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    status: {
-      type: DataTypes.BOOLEAN,
+    status_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: true
+      references: { model: 'status_perguntas', key: 'id' },
+      onUpdate: 'CASCADE',
     },
     pergunta_atual: {
       type: DataTypes.BOOLEAN,

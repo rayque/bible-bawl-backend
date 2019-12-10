@@ -1,9 +1,9 @@
 function perguntas() {
   const perguntas = [];
 
-    for (let participante = 1; participante <= 120; participante += 1) {
+    for (let participante = 1; participante <= 130; participante += 1) {
       const pergunta = {
-        status: true,
+        status_id: 1,
         created_at: new Date(),
         updated_at: new Date(),
       };

@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
   },
   {
     freezeTableName: true,
-    // define the table's name
     tableName: 'respondedores',
   });
   Respondedor.associate = (models) => {
