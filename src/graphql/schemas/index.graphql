@@ -6,6 +6,7 @@
 #import Resposta from 'Resposta.graphql';
 #import Pergunta from 'Pergunta.graphql';
 #import StatusPergunta from 'StatusPergunta.graphql';
+#import AuthData from 'Auth.graphql';
 
 #import Subscription from 'Subscription.graphql';
 

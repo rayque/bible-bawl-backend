@@ -7,4 +7,5 @@ type Query {
     getPerguntaAtual: Int
     getPrimeiraPerguntaNaoRespondida: Int
     getperguntasRespondidas: [Pergunta]
+    login(dados :AuthInput!): AuthData
 }

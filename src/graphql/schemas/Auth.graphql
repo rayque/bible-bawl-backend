@@ -1,0 +1,12 @@
+type AuthData {
+    userId: ID
+    respondedorId: ID
+    token: String!
+    tokenExpiration: Int!
+}
+
+input AuthInput {
+    email: String
+    password: String
+    cod_acesso: String
+}
