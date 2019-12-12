@@ -17,13 +17,17 @@ module.exports = {
             }
 
             const token = jwt.sign(
-                {respondedorId: respondedor[0].id, permissao: 'respondedor'},
+                {
+                    respondedorId: respondedor[0].id,
+                    permissao: 'respondedor',
+                    nome: respondedor[0].nome,
+                },
                 'somesupersecretkey',
                 {
                     expiresIn: '3h'
                 }
             );
-            return { respondedorId: respondedor[0].id, token, tokenExpiration: 3 };
+            return { token, tokenExpiration: 3 };
         } else if(data.email && data.password) {
 
             const user = await Usuario.findAll({
@@ -40,13 +44,17 @@ module.exports = {
             }
 
             const token = jwt.sign(
-                {userId: user[0].id, permissao: 'admin'},
+                {
+                    userId: user[0].id,
+                    nome: user[0].nome,
+                    permissao: 'admin'
+                },
                 'somesupersecretkey',
                 {
                     expiresIn: '3h'
                 }
             );
-            return { userId: user[0].id, token, tokenExpiration: 3 };
+            return { token, tokenExpiration: 3 };
 
         } else {
             throw new Error('Dados insuficientes para fazer o login.');

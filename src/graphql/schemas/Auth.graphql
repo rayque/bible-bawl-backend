@@ -1,6 +1,4 @@
 type AuthData {
-    userId: ID
-    respondedorId: ID
     token: String!
     tokenExpiration: Int!
 }
