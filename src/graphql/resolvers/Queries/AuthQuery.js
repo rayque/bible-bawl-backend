@@ -19,7 +19,7 @@ module.exports = {
             const token = jwt.sign(
                 {
                     respondedorId: respondedor[0].id,
-                    permissao: 'respondedor',
+                    permissao: 'auxiliar',
                     nome: respondedor[0].nome,
                 },
                 'somesupersecretkey',

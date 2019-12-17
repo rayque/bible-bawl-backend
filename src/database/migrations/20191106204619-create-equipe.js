@@ -20,7 +20,7 @@ module.exports = {
     },
     respondedor_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'respondedores', key: 'id' },
       onUpdate: 'CASCADE',
     },
