@@ -1,3 +1,9 @@
+type PontuacaoEquipe {
+    nome: String!
+    pontuacao: Int!
+}
+
 type Subscription {
     novaPerguntaAtual: Int
+    getPontuacaoEquipesByResposta: [PontuacaoEquipe]!
 }

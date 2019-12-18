@@ -7,6 +7,9 @@ module.exports = {
   Subscription: {
     novaPerguntaAtual: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator('NOVA_PERGUNTA_ATUAL')
+    },
+    getPontuacaoEquipesByResposta: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator('PONTUACAO_EQUIPES_BY_RESPOSTA')
     }
   }
 

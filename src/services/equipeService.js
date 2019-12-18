@@ -73,13 +73,13 @@ class EquipeService {
       });
 
       const pontuacao = respostas.reduce((total, num) => {
-        let soma =  total + num * 10 ;
+        let soma =  total + num * 10;
         return  soma === 40 ? 50 : soma;
       }, 0);
 
 
       return {
-        equipe: equipe.nome,
+        nome: equipe.nome,
         pontuacao,
       }
     });
