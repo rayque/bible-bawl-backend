@@ -31,6 +31,12 @@ module.exports = {
 
             await transaction.commit();
 
+
+            const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
+
+            console.log(pontuacao);
+
+
             return !!result;
 
         } catch (e) {

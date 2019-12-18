@@ -1,4 +1,4 @@
-const { Equipe} = require("../models");
+const { Respostas, Equipe} = require("../models");
 const { Op } = require('sequelize');
 
 class EquipeService {
@@ -50,6 +50,46 @@ class EquipeService {
         throw new Error('Erro ao buscar equipes');
       });
   }
+
+  async getPontuacaoEquipesByPegunta(pergunta_id) {
+    const equipes = await Equipe.findAll({
+      include: [
+        {
+          association: 'participantes',
+          include: [
+              {
+                association: 'perguntas',
+                where: {id: pergunta_id}
+              }
+            ]
+        },
+      ]
+    });
+
+    const allEquipes = equipes.map(equipe => {
+
+      const respostas = equipe.participantes.map(participante => {
+        return participante.perguntas[0].ParticipantePergunta.resposta;
+      });
+
+      const pontuacao = respostas.reduce((total, num) => {
+        let soma =  total + num * 10 ;
+        return  soma === 40 ? 50 : soma;
+      }, 0);
+
+
+      return {
+        equipe: equipe.nome,
+        pontuacao,
+      }
+    });
+
+
+    return allEquipes;
+  }
+
+
 };
+
 
 module.exports = new EquipeService();
