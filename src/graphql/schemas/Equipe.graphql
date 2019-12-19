@@ -13,3 +13,19 @@ type PontuacaoEquipe {
     nome: String!
     pontuacao: Int!
 }
+
+type ResultadoCopa {
+    colocacao: Int!
+    nome: String!
+    pontuacao: Int!
+}
+
+type ResultadoCategoria{
+    categoria: Categoria
+    resultado_equipes: ResultadoCopa
+}
+
+type ResultadoIndividual{
+    par: Categoria
+    resultado_equipes: ResultadoCopa
+}
