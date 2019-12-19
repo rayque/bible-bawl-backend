@@ -8,3 +8,8 @@ type Equipe {
 input EquipeInput {
     participantes: [ParticipanteInput]
 }
+
+type PontuacaoEquipe {
+    nome: String!
+    pontuacao: Int!
+}

@@ -6,4 +6,7 @@ module.exports = {
   getEquipes() {
     return EquipeService.getEquipes();
   },
+  getPontuacaoEquipesByResposta(_, {pergunta_id}) {
+    return EquipeService.getPontuacaoEquipesByPegunta(pergunta_id);
+  }
 };

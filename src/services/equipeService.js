@@ -68,6 +68,8 @@ class EquipeService {
 
     const allEquipes = equipes.map(equipe => {
 
+      let nome = equipe.nome.split(" ",2).toString();
+
       const respostas = equipe.participantes.map(participante => {
         return participante.perguntas[0].ParticipantePergunta.resposta;
       });
@@ -77,9 +79,8 @@ class EquipeService {
         return  soma === 40 ? 50 : soma;
       }, 0);
 
-
       return {
-        nome: equipe.nome,
+        nome,
         pontuacao,
       }
     });

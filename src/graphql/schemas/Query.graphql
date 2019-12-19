@@ -8,4 +8,5 @@ type Query {
     getPrimeiraPerguntaNaoRespondida: Int
     getperguntasRespondidas: [Pergunta]
     login(dados :AuthInput!): AuthData
+    getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoEquipe]!
 }
