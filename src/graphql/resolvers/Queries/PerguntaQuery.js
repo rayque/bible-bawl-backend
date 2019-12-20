@@ -1,4 +1,4 @@
-const {Pergunta, StatusPergunta} = require('../../../models');
+const {Pergunta, StatusPergunta, Respostas, Equipe} = require('../../../models');
 
 module.exports = {
     getPerguntaAtual() {
@@ -43,7 +43,6 @@ module.exports = {
             throw new Error(e);
         }
     },
-
     async getperguntasRespondidas() {
         try {
             const statusRep = await StatusPergunta.findAll(
@@ -89,5 +88,40 @@ module.exports = {
             throw new Error(e);
         }
     },
+    async getResultadoCopa(_ ,{nome_categoria, tipo}) {
+        try {
+            console.log(nome_categoria, tipo);
+
+            const equipes = await Equipe.findAll({
+                where: {ca}
+                include: [
+                    {
+                        association: 'participantes',
+                        include: [
+                            {
+                                association: 'perguntas',
+                                where: {id: pergunta_id}
+                            }
+                        ]
+                    },
+                ]
+            });
+
+
+
+            return [
+                {
+                    classificacao: 1,
+                    nome: "foo",
+                    pontuacao: 54,
+                    acertos_consecutivos: 4,
+                    acertos_50_pontos: 5
+                }
+            ]
+        } catch (e) {
+            throw new Error(e);
+        }
+
+    }
 
 };

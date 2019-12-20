@@ -9,4 +9,5 @@ type Query {
     getperguntasRespondidas: [Pergunta]
     login(dados :AuthInput!): AuthData
     getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoEquipe]!
+    getResultadoCopa(nome_categoria: String!, tipo: String!): [ResultadoCopa]!
 }

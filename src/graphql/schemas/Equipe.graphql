@@ -15,17 +15,9 @@ type PontuacaoEquipe {
 }
 
 type ResultadoCopa {
-    colocacao: Int!
+    classificacao: Int!
     nome: String!
     pontuacao: Int!
-}
-
-type ResultadoCategoria{
-    categoria: Categoria
-    resultado_equipes: ResultadoCopa
-}
-
-type ResultadoIndividual{
-    par: Categoria
-    resultado_equipes: ResultadoCopa
+    acertos_consecutivos: Int
+    acertos_50_pontos: Int
 }
