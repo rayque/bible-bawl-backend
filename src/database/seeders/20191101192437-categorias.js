@@ -19,7 +19,7 @@ module.exports = {
       },
       {
         nome: 'adulto',
-        descricao: 'Adulto (acima de 25)',
+        descricao: 'Adulto (acima de 25 anos)',
         idade_min: 26,
         idade_max: 99,
         created_at: new Date(),

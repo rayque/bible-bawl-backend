@@ -1,5 +1,6 @@
 const {Pergunta, StatusPergunta, Respostas, Equipe, Categoria} = require('../../../models');
 const EquipeService = require('./../../../services/equipeService');
+const ResultadoService = require('./../../../services/resultadoService');
 
 module.exports = {
     getPerguntaAtual() {
@@ -91,95 +92,13 @@ module.exports = {
     },
     async getResultadoCopa(_, {nome_categoria, tipo}) {
         try {
-            const categoria = await Categoria.findAll({
-                where: {nome: nome_categoria}
-            });
-            const statusRespondido = await StatusPergunta.findAll(
-                {
-                    where: {
-                        nome: 'respondido',
-                    }
-                });
-            /*
-            todo
-            add where status respondido
-            * */
-            const equipes = await Equipe.findAll({
-                where: {categoria_id: categoria[0].id},
-                include: [
-                    {
-                        association: 'participantes',
-                        include: [
-                            {
-                                association: 'perguntas',
-                                where: {status_id: statusRespondido[0].id}
-
-                            }
-                        ]
-                    },
-                ]
-            });
-
-            let allEquipes = equipes.map(equipe => {
-                let totalPontosEquipe = 0;
-                let totalBonosEquipe = 0;
-
-
-                for (let i = 1; i <= 120; i++) {
-                    let totalAcertosPergunta = 0;
-
-                    equipe.participantes.forEach(participante => {
-
-                        if (participante.perguntas.length) {
-                            const pergunta = participante.perguntas.filter(pergunta => {
-                                return pergunta.id === i;
-                            });
-                            if (pergunta.length) {
-                                totalAcertosPergunta += pergunta[0].ParticipantePergunta.resposta;
-                            }
-                        }
-                    });
-
-                    const hasBonus = EquipeService.hasBonus(totalAcertosPergunta);
-                    if (hasBonus) {
-                        totalBonosEquipe++;
-                    }
-
-                    totalPontosEquipe += EquipeService.getPontosPerguntaFormatado(totalAcertosPergunta);
-                }
-
-                return {
-                    nome: equipe.nome,
-                    pontuacao: totalPontosEquipe,
-                    acertos_50_pontos: totalBonosEquipe
-                };
-
-            });
-
-            allEquipes.sort(function(a, b){return b.pontuacao - a.pontuacao });
-
-            /*  Verifica empate */
-            const maiorPontucacao = allEquipes[0].pontuacao;
-            const empate = allEquipes.filter(equipe => {
-                return equipe.pontuacao  === maiorPontucacao
-            });
-
-            if (empate.length > 1) {
-                allEquipes.sort(function(a, b){return b.acertos_50_pontos - a.acertos_50_pontos });
+            if ('equipe' === tipo) {
+                return  await ResultadoService.getResultadoEquipe(nome_categoria);
             }
-
-            allEquipes = allEquipes.map((equipe, index) => {
-                return {
-                    classificacao: index+1,
-                    ...equipe
-                };
-            });
-
-            return allEquipes;
+            return  await ResultadoService.getResultadoIndividual(nome_categoria);
         } catch (e) {
             throw new Error(e);
         }
-
     }
 
 };

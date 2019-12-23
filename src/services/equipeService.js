@@ -78,7 +78,7 @@ class EquipeService {
         return  total + num;
       }, 0);
 
-      pontuacao =  this.getPontosPerguntaFormatado(pontuacao);
+      pontuacao =  this.getPontosPerguntaEquipeFormatado(pontuacao);
 
       return {
         nome,
@@ -88,10 +88,13 @@ class EquipeService {
     return allEquipes;
   }
 
-  getPontosPerguntaFormatado(acertos) {
+  getPontosPerguntaEquipeFormatado(acertos) {
     const hasBonus = this.hasBonus(acertos);
     return hasBonus ?  50 : acertos * 10;
+  }
 
+  getPontosPerguntaIndividualFormatado(acertos) {
+    return acertos * 10;
   }
 
   hasBonus(acertos) {
