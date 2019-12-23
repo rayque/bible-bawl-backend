@@ -74,20 +74,30 @@ class EquipeService {
         return participante.perguntas[0].ParticipantePergunta.resposta;
       });
 
-      const pontuacao = respostas.reduce((total, num) => {
-        let soma =  total + num * 10;
-        return  soma === 40 ? 50 : soma;
+      let pontuacao = respostas.reduce((total, num) => {
+        return  total + num;
       }, 0);
+
+      pontuacao =  this.getPontosPerguntaFormatado(pontuacao);
 
       return {
         nome,
         pontuacao,
       }
     });
-
-
     return allEquipes;
   }
+
+  getPontosPerguntaFormatado(acertos) {
+    const hasBonus = this.hasBonus(acertos);
+    return hasBonus ?  50 : acertos * 10;
+
+  }
+
+  hasBonus(acertos) {
+    return  acertos === 4 ? true : false;
+  }
+
 
 
 };
