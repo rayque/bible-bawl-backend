@@ -72,6 +72,10 @@ class ResultadoService {
                 return b.pontuacao - a.pontuacao
             });
 
+            if (!allEquipes.length) {
+                return [];
+            }
+
             /*  Verifica empate */
             const maiorPontucacao = allEquipes[0].pontuacao;
             const empate = allEquipes.filter(equipe => {
@@ -124,22 +128,50 @@ class ResultadoService {
             });
 
 
-
             let allParticipantes = participantes.map(participante => {
+                let perguntasRespondidas = [];
                 let totalPontosParticipante = 0;
-                    participante.perguntas.forEach(pergunta => {
-                        totalPontosParticipante += pergunta.ParticipantePergunta.resposta;;
-                    });
+                let acertosEmSequencia = [];
+                let contAcertosEmSequencia = 0;
+                let perguntaAnterior = 0;
 
-                    totalPontosParticipante = EquipeService.getPontosPerguntaIndividualFormatado(totalPontosParticipante);
+                participante.perguntas.forEach(pergunta => {
+                    totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
+                    perguntasRespondidas.push(pergunta.id);
+                });
+
+                const ultimaPerguntaRespondida = perguntasRespondidas.pop()
+
+                participante.perguntas.forEach(pergunta => {
+                    if (perguntaAnterior === pergunta.id - 1) {
+                        contAcertosEmSequencia++;
+                        if (ultimaPerguntaRespondida === pergunta.id ) {
+                            contAcertosEmSequencia++;
+                        }
+                    } else {
+                        contAcertosEmSequencia = 0;
+                    }
+
+                    if (contAcertosEmSequencia) {
+                        acertosEmSequencia.push(contAcertosEmSequencia);
+                    }
+
+                    perguntaAnterior = pergunta.id;
+                });
+
+                acertosEmSequencia = Math.max(...acertosEmSequencia);
+                totalPontosParticipante = EquipeService.getPontosPerguntaIndividualFormatado(totalPontosParticipante);
 
                 return {
                     nome: participante.nome,
                     pontuacao: totalPontosParticipante,
-                    acertos_consecutivos: 65
+                    acertos_consecutivos: acertosEmSequencia
                 };
-
             });
+
+            if (!allParticipantes.length) {
+                return [];
+            }
 
             allParticipantes.sort(function (a, b) {
                 return b.pontuacao - a.pontuacao
@@ -157,15 +189,15 @@ class ResultadoService {
             //     });
             // }
 
-            allParticipantes = allParticipantes.map((equipe, index) => {
+            allParticipantes = allParticipantes.map((participante, index) => {
                 return {
                     classificacao: index + 1,
-                    ...equipe
+                    ...participante
                 };
             });
 
 
-            return  allParticipantes;
+            return allParticipantes;
 
         } catch (e) {
             throw new Error(e);
