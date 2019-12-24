@@ -178,16 +178,15 @@ class ResultadoService {
             });
 
             /*  Verifica empate */
-            // const maiorPontucacao = allEquipes[0].pontuacao;
-            // const empate = allEquipes.filter(equipe => {
-            //     return equipe.pontuacao === maiorPontucacao
-            // });
-            //
-            // if (empate.length > 1) {
-            //     allEquipes.sort(function (a, b) {
-            //         return b.acertos_50_pontos - a.acertos_50_pontos
-            //     });
-            // }
+            const maiorPontucacao = allParticipantes[0].pontuacao;
+            const empate = allParticipantes.filter(participante => {
+                return participante.pontuacao === maiorPontucacao
+            });
+            if (empate.length > 1) {
+                allParticipantes.sort(function (a, b) {
+                    return b.acertos_consecutivos - a.acertos_consecutivos
+                });
+            }
 
             allParticipantes = allParticipantes.map((participante, index) => {
                 return {
