@@ -33,7 +33,6 @@ module.exports = {
 
 
             const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
-            console.log(pontuacao);
 
             pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
                 getPontuacaoEquipesByResposta: pontuacao

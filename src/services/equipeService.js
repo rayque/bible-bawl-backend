@@ -46,7 +46,6 @@ class EquipeService {
         })
       })
       .catch((e) => {
-        console.log(e);
         throw new Error('Erro ao buscar equipes');
       });
   }
