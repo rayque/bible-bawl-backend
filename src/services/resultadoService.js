@@ -1,10 +1,10 @@
 const {Pergunta, StatusPergunta, Participante, Equipe, Categoria} = require('./../models');
 const EquipeService = require('./equipeService');
 const {Op} = require('sequelize');
+const R = require('ramda');
 
 class ResultadoService {
     async getResultadoEquipe(nome_categoria) {
-
         try {
             const categoria = await Categoria.findAll({
                 where: {nome: nome_categoria}
@@ -32,77 +32,26 @@ class ResultadoService {
                 ]
             });
 
-            let allEquipes = equipes.map(equipe => {
-                let totalPontosEquipe = 0;
-                let totalBonosEquipe = 0;
-
-
-                for (let i = 1; i <= 120; i++) {
-                    let totalAcertosPergunta = 0;
-
-                    equipe.participantes.forEach(participante => {
-
-                        if (participante.perguntas.length) {
-                            const pergunta = participante.perguntas.filter(pergunta => {
-                                return pergunta.id === i;
-                            });
-                            if (pergunta.length) {
-                                totalAcertosPergunta += pergunta[0].ParticipantePergunta.resposta;
-                            }
-                        }
-                    });
-
-                    const hasBonus = EquipeService.hasBonus(totalAcertosPergunta);
-                    if (hasBonus) {
-                        totalBonosEquipe++;
-                    }
-
-                    totalPontosEquipe += EquipeService.getPontosPerguntaEquipeFormatado(totalAcertosPergunta);
-                }
-
-                return {
-                    nome: equipe.nome,
-                    pontuacao: totalPontosEquipe,
-                    acertos_50_pontos: totalBonosEquipe
-                };
-
-            });
-
-            allEquipes.sort(function (a, b) {
-                return b.pontuacao - a.pontuacao
-            });
-
-            if (!allEquipes.length) {
-                return [];
+            const pontuacoesAndBonusEquipes = await this.getPontuacoesAndBonusEquipes(equipes);
+            if (!pontuacoesAndBonusEquipes.length) {
+                return  [];
             }
+            const classificacao = await this.getClassificacaoEquipes(pontuacoesAndBonusEquipes);
 
-            /*  Verifica empate */
-            const maiorPontucacao = allEquipes[0].pontuacao;
-            const empate = allEquipes.filter(equipe => {
-                return equipe.pontuacao === maiorPontucacao
-            });
 
-            if (empate.length > 1) {
-                allEquipes.sort(function (a, b) {
-                    return b.acertos_50_pontos - a.acertos_50_pontos
-                });
-            }
-
-            allEquipes = allEquipes.map((equipe, index) => {
+            return  classificacao.map((equipe, index) => {
                 return {
                     classificacao: index + 1,
                     ...equipe
                 };
             });
 
-            return allEquipes;
         } catch (e) {
             throw new Error(e);
         }
     }
 
     async getResultadoIndividual(nome_categoria) {
-
         try {
             const categoria = await Categoria.findAll({
                 where: {nome: nome_categoria}
@@ -127,13 +76,14 @@ class ResultadoService {
                 ]
             });
 
-
             let allParticipantes = participantes.map(participante => {
                 let perguntasRespondidas = [];
                 let totalPontosParticipante = 0;
                 let acertosEmSequencia = [];
                 let contAcertosEmSequencia = 0;
                 let perguntaAnterior = 0;
+
+
 
                 participante.perguntas.forEach(pergunta => {
                     totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
@@ -203,7 +153,138 @@ class ResultadoService {
         }
     }
 
+    /* Pega a pontuação e acertos de 50 pontos(bonus) de cada equipe */
+    async getPontuacoesAndBonusEquipes(equipes) {
+        return  equipes.map(equipe => {
+            let totalPontosEquipe = 0;
+            let totalBonosEquipe = 0;
 
+            for (let i = 1; i <= 120; i++) {
+                let totalAcertosPergunta = 0;
+
+                equipe.participantes.forEach(participante => {
+
+                    if (participante.perguntas.length) {
+                        /* Verifica se o participante acertou esta pergunta */
+                        const pergunta = participante.perguntas.filter(pergunta => {
+                            return pergunta.id === i;
+                        });
+                        if (pergunta.length) {
+                            totalAcertosPergunta += pergunta[0].ParticipantePergunta.resposta;
+                        }
+                    }
+                });
+
+                const hasBonus = EquipeService.hasBonus(totalAcertosPergunta);
+                if (hasBonus) {
+                    totalBonosEquipe++;
+                }
+
+                totalPontosEquipe += EquipeService.getPontosPerguntaEquipeFormatado(totalAcertosPergunta);
+            }
+
+            return {
+                id: equipe.id,
+                nome: equipe.nome,
+                pontuacao: totalPontosEquipe,
+                acertos_bonus: totalBonosEquipe
+            };
+        });
+
+
+    }
+
+    async getClassificacaoEquipes(equipes) {
+        /* Ordena por pontuacao */
+        equipes.sort((a, b) => b.pontuacao - a.pontuacao);
+
+        /* Pegas as pontuações e retorna os valores unicos */
+        let pontuacoes = equipes.map(equipe => equipe.pontuacao);
+        pontuacoes = R.uniq(pontuacoes);
+
+        let classificacao = pontuacoes.map((pontos, index) => {
+            let classificacao = index + 1;
+
+            /* Verifica equipes empatadas */
+            const equipesEmpatadas = equipes.filter(equipe => equipe.pontuacao === pontos);
+
+            let bonusEquipes = equipesEmpatadas.map(equipe => equipe.acertos_bonus);
+            bonusEquipes = R.uniq(bonusEquipes);
+
+            if (equipesEmpatadas.length > 1) {
+                /* Verifica se todas as equipes tem bonus igual */
+                if (bonusEquipes.length === 1) {
+                    /* Equipes recebem a mesma classificação */
+                    return equipesEmpatadas.map(equipeEmpatada => {
+                        return {
+                            classificacao,
+                            ...equipeEmpatada
+                        }
+                    });
+                } else {
+                    bonusEquipes = R.uniq(bonusEquipes);
+                    /* Verifica se tem equipes com mesma quantidade de bonus */
+                    console.log(bonusEquipes);
+
+                    // bonusEquipes.forEach(bonus => {
+                    //     const mesmoBonus =  equipesEmpatadas.filter(equipe => {
+                    //         return equipe.acertos_bonus === bonus;
+                    //     });
+                    //
+                    //  const equipesEmpatadasMesmoBonus =  mesmoBonus.map(equipeEmpatada => {
+                    //         return {
+                    //             classificacao,
+                    //             ...equipeEmpatada
+                    //         }
+                    //     });
+                    //
+                    // });
+            // return R.flatten(R.flatten(equipesEmpatadasMesmoBonus)) ;
+                    console.log(equipesEmpatadasMesmoBonus);
+                    /* Se houver equipes com mesma pontuação e memso bonus, recebem a mesma classificação */
+                    // if (equipesEmpatadasMesmoBonus.length > 1) {
+                    //
+                    //     console.log(equipesEmpatadasMesmoBonus);
+                    //
+                    //     return equipesEmpatadasMesmoBonus.map(equipeEmpatada => {
+                    //         return {
+                    //             classificacao,
+                    //             ...equipeEmpatada
+                    //         }
+                    //     });
+                    // } else {
+                    //
+                    //
+                    //     classificacao++;
+                    //     return equipesEmpatadasMesmoBonus.map(equipeEmpatada => {
+                    //         return {
+                    //             classificacao,
+                    //             ...equipeEmpatada
+                    //         }
+                    //     });
+                    // }
+
+                    //
+
+                    // console.log(bonusEquipes.length );
+                    // console.log(classificacao);
+                    // console.log(equipesEmpatadas);
+                }
+
+            } else {
+                /* se não tiver ordena pelo bonus */
+                return equipesEmpatadas.map(equipeEmpatada => {
+                    return {
+                        classificacao,
+                        ...equipeEmpatada
+                    }
+                });
+            }
+
+        });
+        console.log(classificacao);
+        return R.flatten(classificacao);
+    }
 };
 
 

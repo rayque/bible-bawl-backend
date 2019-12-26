@@ -19,5 +19,5 @@ type ResultadoCopa {
     nome: String!
     pontuacao: Int!
     acertos_consecutivos: Int
-    acertos_50_pontos: Int
+    acertos_bonus: Int
 }

@@ -16,6 +16,7 @@ const server = new ApolloServer({
 server
   .listen()
   .then(({ url }) => {
+    console.clear();
     console.log('---------------------');
     console.log(`Executando em ${url}`);
     console.log('---------------------');

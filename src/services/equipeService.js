@@ -96,8 +96,11 @@ class EquipeService {
     return acertos * 10;
   }
 
-  hasBonus(acertos) {
-    return  acertos === 4 ? true : false;
+  /*
+  * 4 acertos: todos os participantes acertaram aquela pergunta
+  * */
+  hasBonus(acertos){
+    return acertos === 4;
   }
 
 
