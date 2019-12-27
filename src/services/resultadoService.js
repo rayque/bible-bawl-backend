@@ -204,17 +204,16 @@ class ResultadoService {
 
         let classificacao = pontuacoes.map((pontos, index) => {
             let classificacao = index + 1;
-
             /* Verifica equipes empatadas */
             const equipesEmpatadas = equipes.filter(equipe => equipe.pontuacao === pontos);
 
             let bonusEquipes = equipesEmpatadas.map(equipe => equipe.acertos_bonus);
             bonusEquipes = R.uniq(bonusEquipes);
 
-            if (equipesEmpatadas.length > 1) {
+            if (equipesEmpatadas.length > 1) { // Mais de uma equipe com a mesma pontuação
                 /* Verifica se todas as equipes tem bonus igual */
                 if (bonusEquipes.length === 1) {
-                    /* Equipes recebem a mesma classificação */
+                    /* Se tiver bonus igual, equipes recebem a mesma classificação */
                     return equipesEmpatadas.map(equipeEmpatada => {
                         return {
                             classificacao,
@@ -222,53 +221,25 @@ class ResultadoService {
                         }
                     });
                 } else {
+
                     bonusEquipes = R.uniq(bonusEquipes);
                     /* Verifica se tem equipes com mesma quantidade de bonus */
-                    console.log(bonusEquipes);
+                    /* Se houver equipes com mesma pontuação e mesmo bonus, recebem a mesma classificação */
+                    let equipesEmpatadasMesmoBonus = bonusEquipes.map(bonus => {
+                        const equipesMesmaQtdBonus =  equipesEmpatadas.filter(equipe => {
+                            return equipe.acertos_bonus === bonus;
+                        });
+                        return equipesMesmaQtdBonus.map(equipeEmpatada => {
+                            const equipe = {
+                                classificacao,
+                                ...equipeEmpatada
+                            };
+                            classificacao++;
+                            return equipe;
+                        });
+                    });
 
-                    // bonusEquipes.forEach(bonus => {
-                    //     const mesmoBonus =  equipesEmpatadas.filter(equipe => {
-                    //         return equipe.acertos_bonus === bonus;
-                    //     });
-                    //
-                    //  const equipesEmpatadasMesmoBonus =  mesmoBonus.map(equipeEmpatada => {
-                    //         return {
-                    //             classificacao,
-                    //             ...equipeEmpatada
-                    //         }
-                    //     });
-                    //
-                    // });
-            // return R.flatten(R.flatten(equipesEmpatadasMesmoBonus)) ;
-                    console.log(equipesEmpatadasMesmoBonus);
-                    /* Se houver equipes com mesma pontuação e memso bonus, recebem a mesma classificação */
-                    // if (equipesEmpatadasMesmoBonus.length > 1) {
-                    //
-                    //     console.log(equipesEmpatadasMesmoBonus);
-                    //
-                    //     return equipesEmpatadasMesmoBonus.map(equipeEmpatada => {
-                    //         return {
-                    //             classificacao,
-                    //             ...equipeEmpatada
-                    //         }
-                    //     });
-                    // } else {
-                    //
-                    //
-                    //     classificacao++;
-                    //     return equipesEmpatadasMesmoBonus.map(equipeEmpatada => {
-                    //         return {
-                    //             classificacao,
-                    //             ...equipeEmpatada
-                    //         }
-                    //     });
-                    // }
-
-                    //
-
-                    // console.log(bonusEquipes.length );
-                    // console.log(classificacao);
-                    // console.log(equipesEmpatadas);
+                    return equipesEmpatadasMesmoBonus;
                 }
 
             } else {
@@ -282,7 +253,7 @@ class ResultadoService {
             }
 
         });
-        console.log(classificacao);
+
         return R.flatten(classificacao);
     }
 };
