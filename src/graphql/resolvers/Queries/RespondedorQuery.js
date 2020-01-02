@@ -47,6 +47,11 @@ module.exports = {
             };
           }
 
+          const sigla = equipe.participantes.map(participante => {
+            return participante.nome.charAt(0);
+          }).join('');
+
+
           const participantes = equipe.participantes.map(participante => {
             return {
               id: participante.id,
@@ -57,6 +62,7 @@ module.exports = {
           return {
             id: equipe.id,
             nome: equipe.nome,
+            sigla,
             categoria,
             participantes
           }
