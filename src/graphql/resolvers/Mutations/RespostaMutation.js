@@ -1,52 +1,11 @@
 const { Pergunta, ParticipantePergunta, StatusPergunta} = require('./../../../models');
 const { Op, Sequelize } = require('sequelize');
-const EquipeService = require("./../../../services/equipeService")
+const EquipeService = require("./../../../services/equipeService");
+const PerguntaService = require("./../../../services/perguntaService");
 
 module.exports = {
     async setResposta(_, {dados}, {pubsub}) {
-        let transaction;
-        try {
-            transaction = await ParticipantePergunta.sequelize.transaction();
-
-            await ParticipantePergunta.findOrCreate(
-                {
-                    where: {
-                        participante_id: dados.participante_id,
-                        pergunta_id: dados.pergunta_id
-                    }
-                }
-            );
-
-            const result = await ParticipantePergunta.update(
-                {resposta: dados.resposta},
-                {
-                    where: {
-                        participante_id: dados.participante_id,
-                        pergunta_id: dados.pergunta_id
-                    }
-                },
-                { transaction }
-            );
-
-
-            await transaction.commit();
-
-
-            const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
-
-            pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
-                getPontuacaoEquipesByResposta: pontuacao
-            });
-
-
-            return !!result;
-
-        } catch (e) {
-            if (transaction) {
-                transaction.rollback();
-            }
-            throw new Error(e);
-        }
+        return  PerguntaService.setResposta(dados, pubsub);
     },
 
     async setPerguntaAtual(_, {pergunta}, {pubsub}) {

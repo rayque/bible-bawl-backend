@@ -1,5 +1,5 @@
 const faker = require('faker');
-faker.locale = "pt_BR";
+// faker.locale = "pt_BR";
 const EquipeService = require('../../services/equipeService');
 
 module.exports = {
@@ -31,7 +31,7 @@ function getParticipantes(nascimento) {
     const membros = [];
     for (let participante = 1; participante <= 4; participante += 1) {
         const membro = {
-            nome: faker.name.findName(),
+            nome: faker.name.firstName() +' '+faker.name.lastName(),
             data_nascimento: nascimento,
         };
 
