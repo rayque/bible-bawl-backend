@@ -34,17 +34,10 @@ class ResultadoService {
 
             const pontuacoesAndBonusEquipes = await this.getPontuacoesAndBonusEquipes(equipes);
             if (!pontuacoesAndBonusEquipes.length) {
-                return  [];
+                return [];
             }
-            const classificacao = await this.getClassificacaoEquipes(pontuacoesAndBonusEquipes);
+            return await this.getClassificacaoEquipes(pontuacoesAndBonusEquipes);
 
-
-            return  classificacao.map((equipe, index) => {
-                return {
-                    classificacao: index + 1,
-                    ...equipe
-                };
-            });
 
         } catch (e) {
             throw new Error(e);
@@ -53,10 +46,10 @@ class ResultadoService {
 
     async getResultadoIndividual(nome_categoria) {
         try {
-            const categoria = await Categoria.findAll({
+            const categoria = await Categoria.findOne({
                 where: {nome: nome_categoria}
             });
-            const statusRespondido = await StatusPergunta.findAll(
+            const statusRespondido = await StatusPergunta.findOne(
                 {
                     where: {
                         nome: 'respondido',
@@ -67,86 +60,20 @@ class ResultadoService {
                 include: [
                     {
                         association: 'perguntas',
-                        where: {status_id: statusRespondido[0].id}
+                        where: {status_id: statusRespondido.id}
                     },
                     {
                         association: 'equipe',
-                        where: {categoria_id: categoria[0].id}
+                        where: {categoria_id: categoria.id}
                     }
                 ]
             });
 
-            let allParticipantes = participantes.map(participante => {
-                let perguntasRespondidas = [];
-                let totalPontosParticipante = 0;
-                let acertosEmSequencia = [];
-                let contAcertosEmSequencia = 0;
-                let perguntaAnterior = 0;
-
-
-
-                participante.perguntas.forEach(pergunta => {
-                    totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
-                    perguntasRespondidas.push(pergunta.id);
-                });
-
-                const ultimaPerguntaRespondida = perguntasRespondidas.pop()
-
-                participante.perguntas.forEach(pergunta => {
-                    if (perguntaAnterior === pergunta.id - 1) {
-                        contAcertosEmSequencia++;
-                        if (ultimaPerguntaRespondida === pergunta.id ) {
-                            contAcertosEmSequencia++;
-                        }
-                    } else {
-                        contAcertosEmSequencia = 0;
-                    }
-
-                    if (contAcertosEmSequencia) {
-                        acertosEmSequencia.push(contAcertosEmSequencia);
-                    }
-
-                    perguntaAnterior = pergunta.id;
-                });
-
-                acertosEmSequencia = Math.max(...acertosEmSequencia);
-                totalPontosParticipante = EquipeService.getPontosPerguntaIndividualFormatado(totalPontosParticipante);
-
-                return {
-                    nome: participante.nome,
-                    pontuacao: totalPontosParticipante,
-                    acertos_consecutivos: acertosEmSequencia
-                };
-            });
-
-            if (!allParticipantes.length) {
+            const pontuacoesAndAcertosConsecutivos = await this.getPontuacoesIndividual(participantes);
+            if (!pontuacoesAndAcertosConsecutivos.length) {
                 return [];
             }
-
-            allParticipantes.sort(function (a, b) {
-                return b.pontuacao - a.pontuacao
-            });
-
-            /*  Verifica empate */
-            const maiorPontucacao = allParticipantes[0].pontuacao;
-            const empate = allParticipantes.filter(participante => {
-                return participante.pontuacao === maiorPontucacao
-            });
-            if (empate.length > 1) {
-                allParticipantes.sort(function (a, b) {
-                    return b.acertos_consecutivos - a.acertos_consecutivos
-                });
-            }
-
-            allParticipantes = allParticipantes.map((participante, index) => {
-                return {
-                    classificacao: index + 1,
-                    ...participante
-                };
-            });
-
-
-            return allParticipantes;
+            return await this.getClassificacaoIndividual(pontuacoesAndAcertosConsecutivos);
 
         } catch (e) {
             throw new Error(e);
@@ -155,7 +82,7 @@ class ResultadoService {
 
     /* Pega a pontuação e acertos de 50 pontos(bonus) de cada equipe */
     async getPontuacoesAndBonusEquipes(equipes) {
-        return  equipes.map(equipe => {
+        return equipes.map(equipe => {
             let totalPontosEquipe = 0;
             let totalBonosEquipe = 0;
 
@@ -190,8 +117,46 @@ class ResultadoService {
                 acertos_bonus: totalBonosEquipe
             };
         });
+    }
 
+    /* Retorna pontuação e acerto consecutivos de cada participante */
+    async getPontuacoesIndividual(participantes) {
+        return participantes.map(participante => {
+            let totalPontosParticipante = 0;
+            let acertosSequencia = [];
+            let contAcertoSequencia = 0;
 
+            participante.perguntas.forEach(pergunta => {
+                /* conta pontuação participante */
+                totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
+            });
+
+            for (let perguntaId = 1; perguntaId <= 120; perguntaId++) {
+
+                participante.perguntas.forEach(pergunta => {
+                    /* Conta acertos consecutivos do participante */
+                    if (pergunta.id === perguntaId) {
+                        /* Se acertou a pergunta add ponto em sequência */
+                        if (pergunta.ParticipantePergunta.resposta) {
+                            contAcertoSequencia++;
+                        } else {
+                            acertosSequencia.push(contAcertoSequencia);
+                            contAcertoSequencia = 0;
+                        }
+                    }
+                });
+            }
+
+            acertosSequencia = R.uniq(acertosSequencia);
+            const acertos_consecutivos = Math.max(...acertosSequencia);
+
+            return {
+                id: participante.id,
+                nome: participante.nome,
+                pontuacao: totalPontosParticipante,
+                acertos_consecutivos
+            }
+        })
     }
 
     async getClassificacaoEquipes(equipes) {
@@ -222,11 +187,11 @@ class ResultadoService {
                     });
                 } else {
 
-                    bonusEquipes = R.uniq(bonusEquipes);
                     /* Verifica se tem equipes com mesma quantidade de bonus */
                     /* Se houver equipes com mesma pontuação e mesmo bonus, recebem a mesma classificação */
-                    let equipesEmpatadasMesmoBonus = bonusEquipes.map(bonus => {
-                        const equipesMesmaQtdBonus =  equipesEmpatadas.filter(equipe => {
+                    return bonusEquipes.map(bonus => {
+
+                        const equipesMesmaQtdBonus = equipesEmpatadas.filter(equipe => {
                             return equipe.acertos_bonus === bonus;
                         });
                         return equipesMesmaQtdBonus.map(equipeEmpatada => {
@@ -238,8 +203,6 @@ class ResultadoService {
                             return equipe;
                         });
                     });
-
-                    return equipesEmpatadasMesmoBonus;
                 }
 
             } else {
@@ -255,6 +218,93 @@ class ResultadoService {
         });
 
         return R.flatten(classificacao);
+    }
+
+    async getClassificacaoIndividual(participantes) {
+        /* Ordena por pontuacao */
+        participantes.sort((a, b) => b.pontuacao - a.pontuacao);
+        console.clear();
+        console.log("-----");
+        console.log("++++++");
+        console.table(participantes);
+        console.log("------------------------------------");
+
+        /* Pegas as pontuações e retorna os valores unicos */
+        let pontuacoes = participantes.map(participante => participante.pontuacao);
+        pontuacoes = R.uniq(pontuacoes);
+
+        let classificacao = pontuacoes.map((pontos, index) => {
+            let classificacao = index + 1;
+
+            /* Verifica participantes empatados */
+            const participantesEmpatados = participantes.filter(participante => participante.pontuacao === pontos);
+            let acertosConsecutivos = participantesEmpatados.map(participante => participante.acertos_consecutivos);
+
+            acertosConsecutivos = R.uniq(acertosConsecutivos);
+
+            if (participantesEmpatados.length > 1) { // Mais de um participante com a mesma pontuação
+
+                /* Verifica se todos os participantes tem acertos consecutivos igual */
+                if (acertosConsecutivos.length === 1) {
+                    /* Se tiver bonus igual, participantes recebem a mesma classificação */
+                    return participantesEmpatados.map(participanteEmpatado => {
+
+                        return {
+                            classificacao,
+                            ...participanteEmpatado
+                        }
+                    });
+                } else {
+                    // console.log("########");
+                    // console.log(pontos);
+                    // console.log(participantesEmpatados.length);
+                    // console.log(acertosConsecutivos);
+                    // console.log("*******");
+
+                    /* ordena os acertos consecutivos do maior para o menor */
+                    acertosConsecutivos = R.sort((a, b) => b - a, acertosConsecutivos);
+
+                    /*
+                        Verifica se tem participantes com mesma quantidade de acertos consecutivos
+                        Se houver participantes com mesma pontuação e mesma quantidade de acertos consecutivos,
+                        recebem a mesma classificação
+                     */
+                    return acertosConsecutivos.map(acertoConsecutivo => {
+
+                        const participantesMesmaQtdAcertosConsecutivos = participantesEmpatados.filter(participante => {
+                            return participante.acertos_consecutivos === acertoConsecutivo;
+                        });
+
+                        const desempate = participantesMesmaQtdAcertosConsecutivos.map(participante => {
+                            const parti = {
+                                classificacao,
+                                ...participante
+                            };
+                            classificacao++;
+                            return parti;
+                        });
+
+                        // classificacao++;
+                        return desempate;
+                    });
+                }
+
+            } else {
+                /* se não tiver ordena pelo bonus */
+                return participantesEmpatados.map(participante => {
+                    return {
+                        classificacao,
+                        ...participante
+                    }
+                });
+            }
+
+        });
+
+        console.table(R.flatten(classificacao));
+
+        return R.flatten(classificacao);
+
     }
 };
 

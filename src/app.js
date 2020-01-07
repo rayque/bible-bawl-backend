@@ -8,7 +8,7 @@ const schemaPath = 'src/graphql/schemas/index.graphql';
 const server = new ApolloServer({
     typeDefs: importSchema(schemaPath),
     resolvers,
-    context: ({ req, res }) => ({ req, res, pubsub })
+    context: ({req, res}) => ({req, res, pubsub})
 });
 
 // server.listen();
