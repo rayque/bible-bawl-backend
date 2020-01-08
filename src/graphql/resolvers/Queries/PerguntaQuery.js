@@ -94,8 +94,12 @@ module.exports = {
         try {
             if ('equipe' === tipo) {
                 return  await ResultadoService.getResultadoEquipe(nome_categoria);
+            } else if ('individual' === tipo) {
+                return  await ResultadoService.getResultadoIndividual(nome_categoria);
             }
-            return  await ResultadoService.getResultadoIndividual(nome_categoria);
+
+            throw new Error("Tipo incorreto");
+
         } catch (e) {
             throw new Error(e);
         }
