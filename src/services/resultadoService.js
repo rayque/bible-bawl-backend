@@ -36,8 +36,14 @@ class ResultadoService {
             if (!pontuacoesAndBonusEquipes.length) {
                 return [];
             }
-            return await this.getClassificacaoEquipes(pontuacoesAndBonusEquipes);
 
+            const result = await this.getClassificacao(pontuacoesAndBonusEquipes);
+            return  result.map(classificacao => {
+                return {
+                    ...classificacao,
+                    acertos_bonus: classificacao.bonus
+                }
+            })
 
         } catch (e) {
             throw new Error(e);
@@ -73,7 +79,16 @@ class ResultadoService {
             if (!pontuacoesAndAcertosConsecutivos.length) {
                 return [];
             }
-            return await this.getClassificacaoIndividual(pontuacoesAndAcertosConsecutivos);
+            const result = await this.getClassificacao(pontuacoesAndAcertosConsecutivos);
+            console.clear();
+            console.table(result);
+
+            return result.map(classificacao => {
+                return {
+                    ...classificacao,
+                    acertos_consecutivos: classificacao.bonus
+                }
+            });
 
         } catch (e) {
             throw new Error(e);
@@ -114,7 +129,7 @@ class ResultadoService {
                 id: equipe.id,
                 nome: equipe.nome,
                 pontuacao: totalPontosEquipe,
-                acertos_bonus: totalBonosEquipe
+                bonus: totalBonosEquipe
             };
         });
     }
@@ -154,12 +169,14 @@ class ResultadoService {
                 id: participante.id,
                 nome: participante.nome,
                 pontuacao: totalPontosParticipante,
-                acertos_consecutivos
+                bonus: acertos_consecutivos
             }
         })
     }
 
     async getClassificacaoEquipes(equipes) {
+        console.log(equipes);
+
         /* Ordena por pontuacao */
         equipes.sort((a, b) => b.pontuacao - a.pontuacao);
 
@@ -228,6 +245,7 @@ class ResultadoService {
         console.log("++++++");
         console.table(participantes);
         console.log("------------------------------------");
+        let foo = 0;
 
         /* Pegas as pontuações e retorna os valores unicos */
         let pontuacoes = participantes.map(participante => participante.pontuacao);
@@ -249,6 +267,7 @@ class ResultadoService {
                     /* Se tiver bonus igual, participantes recebem a mesma classificação */
                     return participantesEmpatados.map(participanteEmpatado => {
 
+                        console.log(`Classificação ${classificacao}`);
                         return {
                             classificacao,
                             ...participanteEmpatado
@@ -267,22 +286,33 @@ class ResultadoService {
                     /*
                         Verifica se tem participantes com mesma quantidade de acertos consecutivos
                         Se houver participantes com mesma pontuação e mesma quantidade de acertos consecutivos,
-                        recebem a mesma classificação
+                        recebem a mesma classificação.
+                        Senão, vai para a próxima posição
                      */
                     return acertosConsecutivos.map(acertoConsecutivo => {
 
-                        const participantesMesmaQtdAcertosConsecutivos = participantesEmpatados.filter(participante => {
+                        const participantesEmpatadosEmAcertosConsecutivos = participantesEmpatados.filter(participante => {
                             return participante.acertos_consecutivos === acertoConsecutivo;
                         });
 
-                        const desempate = participantesMesmaQtdAcertosConsecutivos.map(participante => {
+                        // console.log()
+                        // console.log(acertoConsecutivo);
+                        // console.log(participantesEmpatadosEmAcertosConsecutivos);
+
+                        const desempate = participantesEmpatadosEmAcertosConsecutivos.map(participante => {
                             const parti = {
                                 classificacao,
                                 ...participante
                             };
                             classificacao++;
+
+                            console.log(`Classificação ${classificacao}`);
+
                             return parti;
                         });
+
+                        foo++;
+
 
                         // classificacao++;
                         return desempate;
@@ -290,7 +320,7 @@ class ResultadoService {
                 }
 
             } else {
-                /* se não tiver ordena pelo bonus */
+                /* Não há empate, ordena pela pontuação */
                 return participantesEmpatados.map(participante => {
                     return {
                         classificacao,
@@ -305,6 +335,70 @@ class ResultadoService {
 
         return R.flatten(classificacao);
 
+    }
+
+    async getClassificacao(jogadores) {
+        /* Ordena por pontuacao */
+        jogadores.sort((a, b) => b.pontuacao - a.pontuacao);
+
+        /* Pegas as pontuações e retorna os valores unicos */
+        let pontuacoes = jogadores.map(jogador => jogador.pontuacao);
+        pontuacoes = R.uniq(pontuacoes);
+
+        let classificacao = pontuacoes.map((pontos, index) => {
+            let classificacao = index + 1;
+            /* Verifica jogadores empatadas */
+            const jogadoresEmpatados = jogadores.filter(jogador => jogador.pontuacao === pontos);
+
+            let bonusJogadores = jogadoresEmpatados.map(jogador => jogador.bonus);
+            bonusJogadores = R.uniq(bonusJogadores);
+
+            if (jogadoresEmpatados.length > 1) { // Mais de uma equipe com a mesma pontuação
+                /* Verifica se todas as equipes tem bonus igual */
+                if (bonusJogadores.length === 1) {
+                    /* Se tiver bonus igual, equipes recebem a mesma classificação */
+                    return jogadoresEmpatados.map(jogadorEmpatado => {
+                        return {
+                            classificacao,
+                            ...jogadorEmpatado
+                        }
+                    });
+                } else {
+
+                    /* ordena os acertos consecutivos do maior para o menor */
+                    bonusJogadores = R.sort((a, b) => b - a, bonusJogadores);
+
+                    /* Verifica se tem equipes com mesma quantidade de bonus */
+                    /* Se houver equipes com mesma pontuação e mesmo bonus, recebem a mesma classificação */
+                    return bonusJogadores.map(bonus => {
+
+                        const jogadoresMesmaQtdBonus = jogadoresEmpatados.filter(jogador => {
+                            return jogador.bonus === bonus;
+                        });
+                        return jogadoresMesmaQtdBonus.map(jogadorEmpatado => {
+                            const jogador = {
+                                classificacao,
+                                ...jogadorEmpatado
+                            };
+                            classificacao++;
+                            return jogador;
+                        });
+                    });
+                }
+
+            } else {
+                /* se não tiver ordena pelo bonus */
+                return jogadoresEmpatados.map(jogadorEmpatado => {
+                    return {
+                        classificacao,
+                        ...jogadorEmpatado
+                    }
+                });
+            }
+
+        });
+
+        return R.flatten(classificacao);
     }
 };
 
