@@ -6,10 +6,10 @@ const R = require('ramda');
 class ResultadoService {
     async getResultadoEquipe(nome_categoria) {
         try {
-            const categoria = await Categoria.findAll({
+            const categoria = await Categoria.findOne({
                 where: {nome: nome_categoria}
             });
-            const statusRespondido = await StatusPergunta.findAll(
+            const statusRespondido = await StatusPergunta.findOne(
                 {
                     where: {
                         nome: 'respondido',
@@ -17,14 +17,14 @@ class ResultadoService {
                 });
 
             const equipes = await Equipe.findAll({
-                where: {categoria_id: categoria[0].id},
+                where: {categoria_id: categoria.id},
                 include: [
                     {
                         association: 'participantes',
                         include: [
                             {
                                 association: 'perguntas',
-                                where: {status_id: statusRespondido[0].id}
+                                where: {status_id: statusRespondido.id}
 
                             }
                         ]
@@ -39,7 +39,7 @@ class ResultadoService {
 
             const result = await this.getClassificacao(pontuacoesAndBonusEquipes);
 
-            return  result.map(classificacao => {
+            return result.map(classificacao => {
                 return {
                     ...classificacao,
                     acertos_bonus: classificacao.bonus
@@ -97,81 +97,93 @@ class ResultadoService {
 
     /* Pega a pontuação e acertos de 50 pontos(bonus) de cada equipe */
     async getPontuacoesAndBonusEquipes(equipes) {
-        return equipes.map(equipe => {
-            let totalPontosEquipe = 0;
-            let totalBonosEquipe = 0;
+        try {
+            const qtdPerguntasRespondidas = await this.getQtdPerguntasRespondidas();
 
-            for (let i = 1; i <= 120; i++) {
-                let totalAcertosPergunta = 0;
+            return equipes.map(equipe => {
+                let totalPontosEquipe = 0;
+                let totalBonosEquipe = 0;
 
-                equipe.participantes.forEach(participante => {
+                for (let i = 1; i <= qtdPerguntasRespondidas; i++) {
+                    let totalAcertosPergunta = 0;
 
-                    if (participante.perguntas.length) {
-                        /* Verifica se o participante acertou esta pergunta */
-                        const pergunta = participante.perguntas.filter(pergunta => {
-                            return pergunta.id === i;
-                        });
-                        if (pergunta.length) {
-                            totalAcertosPergunta += pergunta[0].ParticipantePergunta.resposta;
+                    equipe.participantes.forEach(participante => {
+
+                        if (participante.perguntas.length) {
+                            /* Verifica se o participante acertou esta pergunta */
+                            const pergunta = participante.perguntas.filter(pergunta => {
+                                return pergunta.id === i;
+                            });
+                            if (pergunta.length) {
+                                totalAcertosPergunta += pergunta[0].ParticipantePergunta.resposta;
+                            }
                         }
-                    }
-                });
+                    });
 
-                const hasBonus = EquipeService.hasBonus(totalAcertosPergunta);
-                if (hasBonus) {
-                    totalBonosEquipe++;
+                    const hasBonus = EquipeService.hasBonus(totalAcertosPergunta);
+                    if (hasBonus) {
+                        totalBonosEquipe++;
+                    }
+
+                    totalPontosEquipe += EquipeService.getPontosPerguntaEquipeFormatado(totalAcertosPergunta);
                 }
 
-                totalPontosEquipe += EquipeService.getPontosPerguntaEquipeFormatado(totalAcertosPergunta);
-            }
-
-            return {
-                id: equipe.id,
-                nome: equipe.nome,
-                pontuacao: totalPontosEquipe,
-                bonus: totalBonosEquipe
-            };
-        });
+                return {
+                    id: equipe.id,
+                    nome: equipe.nome,
+                    pontuacao: totalPontosEquipe,
+                    bonus: totalBonosEquipe
+                };
+            });
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     /* Retorna pontuação e acerto consecutivos de cada participante */
     async getPontuacoesIndividual(participantes) {
-        return participantes.map(participante => {
-            let totalPontosParticipante = 0;
-            let acertosSequencia = [];
-            let contAcertoSequencia = 0;
+        try {
+            const qtdPerguntasRespondidas = await this.getQtdPerguntasRespondidas();
 
-            participante.perguntas.forEach(pergunta => {
-                /* conta pontuação participante */
-                totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
-            });
-
-            for (let perguntaId = 1; perguntaId <= 120; perguntaId++) {
+            return participantes.map(participante => {
+                let totalPontosParticipante = 0;
+                let acertosSequencia = [];
+                let contAcertoSequencia = 0;
 
                 participante.perguntas.forEach(pergunta => {
-                    /* Conta acertos consecutivos do participante */
-                    if (pergunta.id === perguntaId) {
-                        /* Se acertou a pergunta add ponto em sequência */
-                        if (pergunta.ParticipantePergunta.resposta) {
-                            contAcertoSequencia++;
-                        } else {
-                            acertosSequencia.push(contAcertoSequencia);
-                            contAcertoSequencia = 0;
-                        }
-                    }
+                    /* conta pontuação participante */
+                    totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
                 });
-            }
 
-            acertosSequencia = R.uniq(acertosSequencia);
-            const acertos_consecutivos = Math.max(...acertosSequencia);
+                for (let perguntaId = 1; perguntaId <= qtdPerguntasRespondidas; perguntaId++) {
 
-            return {
-                id: participante.id,
-                nome: participante.nome,
-                pontuacao: totalPontosParticipante,
-                bonus: acertos_consecutivos
-            }
-        })
+                    participante.perguntas.forEach(pergunta => {
+                        /* Conta acertos consecutivos do participante */
+                        if (pergunta.id === perguntaId) {
+                            /* Se acertou a pergunta add ponto em sequência */
+                            if (pergunta.ParticipantePergunta.resposta) {
+                                contAcertoSequencia++;
+                            } else {
+                                acertosSequencia.push(contAcertoSequencia);
+                                contAcertoSequencia = 0;
+                            }
+                        }
+                    });
+                }
+
+                acertosSequencia = R.uniq(acertosSequencia);
+                const acertos_consecutivos = Math.max(...acertosSequencia);
+
+                return {
+                    id: participante.id,
+                    nome: participante.nome,
+                    pontuacao: totalPontosParticipante,
+                    bonus: acertos_consecutivos
+                }
+            })
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     async getClassificacao(jogadores) {
@@ -243,7 +255,7 @@ class ResultadoService {
 
             } else {
                 /* Não há empate */
-                const dados =jogadoresEmpatados.map(jogadorEmpatado => {
+                const dados = jogadoresEmpatados.map(jogadorEmpatado => {
                     return {
                         classificacao,
                         ...jogadorEmpatado
@@ -255,6 +267,18 @@ class ResultadoService {
         });
 
         return R.flatten(result);
+    }
+
+    async getQtdPerguntasRespondidas() {
+        const perguntas = await Pergunta.findAll({
+            include: [
+                {
+                    association: 'status',
+                    where: {nome: 'respondido'}
+                },
+            ]
+        });
+        return perguntas.length;
     }
 };
 
