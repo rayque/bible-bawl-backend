@@ -8,6 +8,6 @@ type Query {
     getPrimeiraPerguntaNaoRespondida: Int
     getperguntasRespondidas: [Pergunta]
     login(dados :AuthInput!): AuthData
-    getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoEquipe]!
+    getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoCategoria]!
     getResultadoCopa(nome_categoria: String!, tipo: String!): [ResultadoCopa]!
 }

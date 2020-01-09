@@ -6,7 +6,7 @@ module.exports = {
   getEquipes() {
     return EquipeService.getEquipes();
   },
-  getPontuacaoEquipesByResposta(_, {pergunta_id}) {
-    return EquipeService.getPontuacaoEquipesByPegunta(pergunta_id);
+  async getPontuacaoEquipesByResposta(_, {pergunta_id}) {
+    return  await EquipeService.getPontuacaoEquipesByPegunta(pergunta_id);
   }
 };

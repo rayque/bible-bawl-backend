@@ -10,9 +10,16 @@ input EquipeInput {
     participantes: [ParticipanteInput]
 }
 
-type PontuacaoEquipe {
+type EquipePontuacao {
+    nome: String
+    pontuacao: Int
+}
+
+type PontuacaoCategoria {
     nome: String!
-    pontuacao: Int!
+    descricao: String!
+    equipes: [[EquipePontuacao]]!
+
 }
 
 type ResultadoCopa {

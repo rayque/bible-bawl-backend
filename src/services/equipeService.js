@@ -52,40 +52,51 @@ class EquipeService {
   }
 
   async getPontuacaoEquipesByPegunta(pergunta_id) {
-    const equipes = await Equipe.findAll({
+    const categorias = await Categoria.findAll({
       include: [
         {
-          association: 'participantes',
+          association: 'equipes',
           include: [
-              {
-                association: 'perguntas',
-                where: {id: pergunta_id}
-              }
-            ]
+            {
+              association: 'participantes',
+              include: [
+                {
+                  association: 'perguntas',
+                  where: {id: pergunta_id}
+                }
+              ]
+            },
+          ]
         },
       ]
     });
 
-    const allEquipes = equipes.map(equipe => {
+    const dados = categorias.map(categoria => {
 
-      let nome = equipe.nome.split(" ",2).toString();
+      const equipes = categoria.equipes.map(equipe => {
+        return equipe.participantes.map(participante => {
+          const pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
 
-      const respostas = equipe.participantes.map(participante => {
-        return participante.perguntas[0].ParticipantePergunta.resposta;
+          return {
+            nome: participante.nome,
+            pontuacao,
+          };
+        });
       });
 
-      let pontuacao = respostas.reduce((total, num) => {
-        return  total + num;
-      }, 0);
-
-      pontuacao =  this.getPontosPerguntaEquipeFormatado(pontuacao);
-
       return {
-        nome,
-        pontuacao,
-      }
+        nome: categoria.nome,
+        descricao: categoria.descricao,
+        equipes,
+      };
     });
-    return allEquipes;
+
+    console.log(dados[0].equipes);
+    return dados;
+  }
+
+  getPontuacaoIndividualFormatado(pontos) {
+    return pontos ? pontos * 10 : 0;
   }
 
   getPontosPerguntaEquipeFormatado(acertos) {

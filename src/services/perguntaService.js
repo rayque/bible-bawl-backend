@@ -34,6 +34,8 @@ class PerguntaService {
 
             if (pubsub) {
                 const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
+                console.clear();
+                console.log(pontuacao);
                 pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
                     getPontuacaoEquipesByResposta: pontuacao
                 });

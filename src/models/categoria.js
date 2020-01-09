@@ -10,8 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     // define the table's name
     tableName: 'categorias',
   });
-  // Categoria.associate = function (models) {
-  //   // associations can be defined here
-  // };
+
+  Categoria.associate = (models) => {
+    Categoria.hasMany(models.Equipe, {
+      foreignKey: 'categoria_id',
+      as: 'equipes',
+    });
+  };
+
   return Categoria;
 };
