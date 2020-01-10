@@ -91,7 +91,6 @@ class EquipeService {
       };
     });
 
-    console.log(dados[0].equipes);
     return dados;
   }
 
@@ -153,7 +152,6 @@ class EquipeService {
     try {
       transaction = await Equipe.sequelize.transaction();
       const data = dados.dados || {};
-      console.log(data);
 
       const catedoriaId = await this.getCategoria(data);
 
@@ -201,7 +199,6 @@ class EquipeService {
         participantes,
       };
     } catch (err) {
-      console.log(err);
       if (transaction) {
         transaction.rollback();
       }

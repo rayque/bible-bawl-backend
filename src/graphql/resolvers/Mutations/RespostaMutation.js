@@ -23,7 +23,7 @@ module.exports = {
                 { transaction }
             );
 
-            const status = await StatusPergunta.findAll(
+            const status = await StatusPergunta.findOne(
                 {
                     where: {
                         nome: 'respondido',
@@ -34,7 +34,7 @@ module.exports = {
             const result = await Pergunta.update(
                 {
                     pergunta_atual: true,
-                    status_id: status[0].id
+                    status_id: status.id
                 },
                 {
                     where: {
@@ -58,5 +58,41 @@ module.exports = {
             }
             throw new Error(e);
         }
+    },
+
+    async cancelarPergunta(_, {pergunta}) {
+        let transaction;
+        try {
+            transaction = await Pergunta.sequelize.transaction();
+
+            const status = await StatusPergunta.findOne(
+                {
+                    where: {
+                        nome: 'cancelado',
+                    }
+                },
+                { transaction });
+
+            const result = await Pergunta.update(
+                {
+                    status_id: status.id
+                },
+                {
+                    where: {id: pergunta}
+                },
+                { transaction }
+            );
+
+            await transaction.commit();
+
+            return pergunta;
+
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
     }
+
 };
