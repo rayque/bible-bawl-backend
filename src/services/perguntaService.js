@@ -34,8 +34,7 @@ class PerguntaService {
 
             if (pubsub) {
                 const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
-                console.clear();
-                console.log(pontuacao);
+
                 pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
                     getPontuacaoEquipesByResposta: pontuacao
                 });
@@ -47,6 +46,21 @@ class PerguntaService {
             if (transaction) {
                 transaction.rollback();
             }
+            throw new Error(e);
+        }
+    }
+
+    async getPerguntaAtual(){
+        try {
+            return Pergunta
+                .findOne({
+                    where: {pergunta_atual: 1},
+                    include: [
+                        {association: 'status'},
+                    ]
+
+                });
+        } catch (e) {
             throw new Error(e);
         }
     }

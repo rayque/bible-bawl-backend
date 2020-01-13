@@ -9,6 +9,13 @@ module.exports = {
     },
 
     async setPerguntaAtual(_, {pergunta}, {pubsub}) {
+        console.clear();
+        console.log(pergunta)
+        console.log()
+        console.log()
+        console.log()
+
+        console.log("=========");
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -19,22 +26,12 @@ module.exports = {
                     where: {
                         pergunta_atual: true
                     }
-                },
-                { transaction }
+                }
             );
 
-            const status = await StatusPergunta.findOne(
-                {
-                    where: {
-                        nome: 'respondido',
-                    }
-                },
-                { transaction });
-
-            const result = await Pergunta.update(
+            await Pergunta.update(
                 {
                     pergunta_atual: true,
-                    status_id: status.id
                 },
                 {
                     where: {
@@ -43,12 +40,28 @@ module.exports = {
                 },
                 { transaction }
             );
+            console.log()
+            console.log("----------    1 ---------- ");
+            console.log()
 
             await transaction.commit();
 
+            const perguntaAtual = await PerguntaService.getPerguntaAtual();
+            console.log()
+            console.log("----------    2   ---------- ");
+            console.log()
+
+            // console.log(perguntaAtual);
+
+
             pubsub.publish('NOVA_PERGUNTA_ATUAL', {
-                novaPerguntaAtual: pergunta
+                novaPerguntaAtual: perguntaAtual
             });
+
+            console.log()
+
+            console.log("----------    3   ---------- ");
+            console.log()
 
             return pergunta;
 
@@ -56,6 +69,9 @@ module.exports = {
             if (transaction) {
                 transaction.rollback();
             }
+            console.log("----------    4   ---------- ");
+
+            console.log(e);
             throw new Error(e);
         }
     },

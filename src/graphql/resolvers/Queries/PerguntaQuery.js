@@ -1,45 +1,54 @@
 const {Pergunta, StatusPergunta, Respostas, Equipe, Categoria} = require('../../../models');
 const EquipeService = require('./../../../services/equipeService');
 const ResultadoService = require('./../../../services/resultadoService');
+const PerguntaService = require('./../../../services/perguntaService');
 
 module.exports = {
     async getPerguntaAtual() {
-        const pergunta = await Pergunta
-            .findOne({
-                where: {pergunta_atual: 1},
-                include: [
-                    {association: 'status'},
-                ]
-
-            });
-        return pergunta;
+        return PerguntaService.getPerguntaAtual();
     },
 
     async getPrimeiraPerguntaNaoRespondida() {
+        let transaction;
         try {
-            const statusNaoResp = await StatusPergunta.findAll(
+                transaction = await Pergunta.sequelize.transaction();
+
+            const statusNaoResp = await StatusPergunta.findOne(
                 {
                     where: {
                         nome: 'n_respondido',
                     }
                 });
 
-            return Pergunta
-                .findAll({where: {status_id: statusNaoResp[0].id}})
-                .then(perguntas => {
-                    if (!perguntas.length) {
-                        return 0;
-                    }
-
-                    return perguntas[0].id;
-                })
-                .catch(() => {
-                    throw new Error('Erro ao buscar primeira pergunta não respondida');
+            const pergunta = Pergunta
+                .findOne({
+                    where: {status_id: statusNaoResp.id},
+                    include: [
+                        {association: 'status'},
+                    ]
                 });
+
+
+            await Pergunta.update(
+                {
+                    pergunta_atual: true,
+                    id: pergunta.id
+                },
+                {
+                    where: {
+                        id: pergunta
+                    }
+                },
+                { transaction }
+            );
+
+            return pergunta;
+
         } catch (e) {
             if (transaction) {
                 transaction.rollback();
             }
+
             throw new Error(e);
         }
     },

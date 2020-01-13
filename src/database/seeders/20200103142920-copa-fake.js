@@ -4,7 +4,7 @@ const faker = require('faker');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await responderPerguntas();
+        // await responderPerguntas();
     },
 
     down: (queryInterface, Sequelize) => {
