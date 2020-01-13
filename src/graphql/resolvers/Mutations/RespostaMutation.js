@@ -60,7 +60,7 @@ module.exports = {
         }
     },
 
-    async cancelarPergunta(_, {pergunta}) {
+    async setStatusPergunta(_, {pergunta_id, status_name}) {
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -68,7 +68,7 @@ module.exports = {
             const status = await StatusPergunta.findOne(
                 {
                     where: {
-                        nome: 'cancelado',
+                        nome: status_name,
                     }
                 },
                 { transaction });
@@ -78,15 +78,14 @@ module.exports = {
                     status_id: status.id
                 },
                 {
-                    where: {id: pergunta}
+                    where: {id: pergunta_id}
                 },
                 { transaction }
             );
 
             await transaction.commit();
 
-            return pergunta;
-
+            return result.length;
         } catch (e) {
             if (transaction) {
                 transaction.rollback();

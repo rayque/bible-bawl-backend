@@ -4,10 +4,11 @@ type Query {
     getRespondedores: [Respondedor]!
     getRespondedor(id: Int!): Respondedor!
     getEquipes: [Equipe]!
-    getPerguntaAtual: Int
+    getPerguntaAtual: Pergunta
     getPrimeiraPerguntaNaoRespondida: Int
     getperguntasRespondidas: [Pergunta]
     login(dados :AuthInput!): AuthData
     getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoCategoria]!
     getResultadoCopa(nome_categoria: String!, tipo: String!): [ResultadoCopa]!
+    getStatusPergunta: [StatusPergunta!]!
 }
