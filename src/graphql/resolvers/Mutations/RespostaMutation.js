@@ -90,8 +90,7 @@ module.exports = {
 
             await transaction.commit();
 
-            return pergunta;
-
+            return result.length;
         } catch (e) {
             if (transaction) {
                 transaction.rollback();

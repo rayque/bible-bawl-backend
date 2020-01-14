@@ -3,20 +3,18 @@ const EquipeService = require('./../../../services/equipeService');
 const ResultadoService = require('./../../../services/resultadoService');
 
 module.exports = {
-    getPerguntaAtual() {
-        return Pergunta
-            .findAll({where: {pergunta_atual: 1}})
-            .then(perguntas => {
-                if (!perguntas.length) {
-                    return 0;
-                }
+    async getPerguntaAtual() {
+        const pergunta = await Pergunta
+            .findOne({
+                where: {pergunta_atual: 1},
+                include: [
+                    {association: 'status'},
+                ]
 
-                return perguntas[0].id;
-            })
-            .catch(() => {
-                throw new Error('Erro ao buscar pergunta atual');
             });
+        return pergunta;
     },
+
     async getPrimeiraPerguntaNaoRespondida() {
         try {
             const statusNaoResp = await StatusPergunta.findAll(
@@ -45,6 +43,7 @@ module.exports = {
             throw new Error(e);
         }
     },
+
     async getperguntasRespondidas() {
         try {
             const statusRep = await StatusPergunta.findAll(
@@ -90,6 +89,7 @@ module.exports = {
             throw new Error(e);
         }
     },
+
     async getResultadoCopa(_, {nome_categoria, tipo}) {
         try {
             if ('equipe' === tipo) {
