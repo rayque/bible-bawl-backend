@@ -103,6 +103,11 @@ module.exports = {
         } catch (e) {
             throw new Error(e);
         }
+    },
+
+    async getStatusPergunta() {
+        return StatusPergunta.findAll();
     }
+
 
 };

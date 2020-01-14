@@ -60,28 +60,33 @@ module.exports = {
         }
     },
 
-    async cancelarPergunta(_, {pergunta}) {
+    async setStatusPergunta(_, {pergunta, status}) {
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
 
-            const status = await StatusPergunta.findOne(
+            const statusPergunta = await StatusPergunta.findOne(
                 {
-                    where: {
-                        nome: 'cancelado',
-                    }
+                    where: {nome: status}
                 },
-                { transaction });
+                {transaction}
+            );
+
+            if (!statusPergunta) {
+                throw new Error("Status não encontrado");
+            }
 
             const result = await Pergunta.update(
-                {
-                    status_id: status.id
-                },
+                {status_id: statusPergunta.id},
                 {
                     where: {id: pergunta}
                 },
                 { transaction }
             );
+
+            if (!result.length) {
+                throw new Error("Não foi possível atualizar status da pergunta");
+            }
 
             await transaction.commit();
 
