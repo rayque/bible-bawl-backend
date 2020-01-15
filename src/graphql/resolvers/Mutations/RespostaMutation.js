@@ -34,7 +34,7 @@ module.exports = {
             const result = await Pergunta.update(
                 {
                     pergunta_atual: true,
-                    status_id: status.id
+                    // status_id: status.id
                 },
                 {
                     where: {
@@ -46,8 +46,16 @@ module.exports = {
 
             await transaction.commit();
 
+            /* refac */
+            const perguntaAtual =  Pergunta.findOne({
+                where: {pergunta_atual: 1},
+                include: [
+                    {association: 'status'},
+                ]
+            });
+
             pubsub.publish('NOVA_PERGUNTA_ATUAL', {
-                novaPerguntaAtual: pergunta
+                novaPerguntaAtual: perguntaAtual
             });
 
             return pergunta;

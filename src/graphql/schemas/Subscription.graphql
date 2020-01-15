@@ -1,4 +1,4 @@
 type Subscription {
-    novaPerguntaAtual: Int
+    novaPerguntaAtual: Pergunta
     getPontuacaoEquipesByResposta: [PontuacaoCategoria]!
 }
