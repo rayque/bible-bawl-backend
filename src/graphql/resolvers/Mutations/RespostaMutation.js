@@ -33,11 +33,9 @@ module.exports = {
                 { transaction }
             );
 
-            await transaction.commit();
 
-            /* refac */
             const perguntaAtual =  Pergunta.findOne({
-                where: {pergunta_atual: 1},
+                where: {id: pergunta},
                 include: [
                     {association: 'status'},
                 ]
@@ -46,6 +44,8 @@ module.exports = {
             pubsub.publish('NOVA_PERGUNTA_ATUAL', {
                 novaPerguntaAtual: perguntaAtual
             });
+
+            await transaction.commit();
 
             return pergunta;
 
@@ -57,7 +57,7 @@ module.exports = {
         }
     },
 
-    async setStatusPergunta(_, {pergunta, status}) {
+    async setStatusPergunta(_, {pergunta, status}, {pubsub}) {
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -84,6 +84,13 @@ module.exports = {
             if (!result.length) {
                 throw new Error("Não foi possível atualizar status da pergunta");
             }
+
+
+            const perguntaAtual =   PerguntaService.getPrimeiraPerguntaNaoRespondida();
+
+            pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+                novaPerguntaAtual: perguntaAtual
+            });
 
             await transaction.commit();
 

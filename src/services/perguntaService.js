@@ -34,8 +34,6 @@ class PerguntaService {
 
             if (pubsub) {
                 const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
-                console.clear();
-                console.log(pontuacao);
                 pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
                     getPontuacaoEquipesByResposta: pontuacao
                 });
@@ -43,6 +41,28 @@ class PerguntaService {
 
             return !!result;
 
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
+    }
+    async getPrimeiraPerguntaNaoRespondida() {
+        try {
+            const statusNaoResp = await StatusPergunta.findOne(
+                {
+                    where: {
+                        nome: 'n_respondido',
+                    }
+                });
+
+            return Pergunta.findOne({
+                where: {status_id: statusNaoResp.id},
+                include: [
+                    {association: 'status'},
+                ]
+            });
         } catch (e) {
             if (transaction) {
                 transaction.rollback();

@@ -1,6 +1,7 @@
 const {Pergunta, StatusPergunta, Respostas, Equipe, Categoria} = require('../../../models');
 const EquipeService = require('./../../../services/equipeService');
 const ResultadoService = require('./../../../services/resultadoService');
+const PerguntaService = require('./../../../services/perguntaService');
 
 module.exports = {
     getPerguntaAtual() {
@@ -10,29 +11,9 @@ module.exports = {
                 {association: 'status'},
             ]
         });
-
     },
     async getPrimeiraPerguntaNaoRespondida() {
-        try {
-            const statusNaoResp = await StatusPergunta.findOne(
-                {
-                    where: {
-                        nome: 'n_respondido',
-                    }
-                });
-
-            return Pergunta.findOne({
-                where: {status_id: statusNaoResp.id},
-                include: [
-                    {association: 'status'},
-                ]
-            });
-        } catch (e) {
-            if (transaction) {
-                transaction.rollback();
-            }
-            throw new Error(e);
-        }
+        return PerguntaService.getPrimeiraPerguntaNaoRespondida();
     },
     async getperguntasRespondidas() {
         try {
