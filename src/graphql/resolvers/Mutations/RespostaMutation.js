@@ -23,19 +23,8 @@ module.exports = {
                 { transaction }
             );
 
-            const status = await StatusPergunta.findOne(
-                {
-                    where: {
-                        nome: 'respondido',
-                    }
-                },
-                { transaction });
-
             const result = await Pergunta.update(
-                {
-                    pergunta_atual: true,
-                    // status_id: status.id
-                },
+                {pergunta_atual: true},
                 {
                     where: {
                         id: pergunta
