@@ -1,10 +1,13 @@
 const { Usuario, Respondedor } = require('../../../models');
+const {JWT_SECRET} = require('../../../utils');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
 module.exports = {
     async login(_, {dados}) {
+
+        console.log(JWT_SECRET);
 
         const data = dados;
         if (data.cod_acesso) {
@@ -22,7 +25,7 @@ module.exports = {
                     permissao: 'auxiliar',
                     nome: respondedor[0].nome,
                 },
-                'somesupersecretkey',
+                JWT_SECRET,
                 {
                     expiresIn: '3h'
                 }
@@ -49,7 +52,7 @@ module.exports = {
                     nome: user[0].nome,
                     permissao: 'admin'
                 },
-                'somesupersecretkey',
+                JWT_SECRET,
                 {
                     expiresIn: '3h'
                 }
