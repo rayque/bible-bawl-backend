@@ -4,7 +4,8 @@ const ResultadoService = require('./../../../services/resultadoService');
 const PerguntaService = require('./../../../services/perguntaService');
 
 module.exports = {
-    getPerguntaAtual() {
+    getPerguntaAtual(_, args, context) {
+        context.validarIsLogged();
         return Pergunta.findOne({
             where: {pergunta_atual: 1},
             include: [
@@ -12,10 +13,12 @@ module.exports = {
             ]
         });
     },
-    async getPrimeiraPerguntaNaoRespondida() {
+    async getPrimeiraPerguntaNaoRespondida(_, args, context) {
+        context.validarIsLogged();
         return PerguntaService.getPrimeiraPerguntaNaoRespondida();
     },
-    async getperguntasRespondidas() {
+    async getperguntasRespondidas(_, args, context) {
+        context.validarAdmin();
         try {
             const statusRep = await StatusPergunta.findAll(
                 {
@@ -60,7 +63,9 @@ module.exports = {
             throw new Error(e);
         }
     },
-    async getResultadoCopa(_, {nome_categoria, tipo}) {
+    async getResultadoCopa(_, {nome_categoria, tipo}, context) {
+        context.validarAdmin();
+
         try {
             if ('equipe' === tipo) {
                 return  await ResultadoService.getResultadoEquipe(nome_categoria);
@@ -75,7 +80,9 @@ module.exports = {
         }
     },
 
-    async getStatusPergunta() {
+    async getStatusPergunta(_, args, context) {
+        context.validarIsLogged();
+
         return StatusPergunta.findAll();
     }
 

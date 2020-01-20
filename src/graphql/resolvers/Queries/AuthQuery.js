@@ -46,18 +46,20 @@ module.exports = {
                 throw new Error('Usuário ou senha está incorreto');
             }
 
+            const agora = Math.floor(Date.now() / 1000)
+            const tresDias = (3 * 24 * 60 * 60);
+
             const token = jwt.sign(
                 {
                     userId: user[0].id,
                     nome: user[0].nome,
-                    permissao: 'admin'
+                    permissao: 'admin',
+                    iat: agora,
+                    exp: agora + tresDias
                 },
-                JWT_SECRET,
-                {
-                    expiresIn: '3h'
-                }
+                JWT_SECRET
             );
-            return { token, tokenExpiration: 3 };
+            return { token, tokenExpiration: 1 };
 
         } else {
             throw new Error('Dados insuficientes para fazer o login.');

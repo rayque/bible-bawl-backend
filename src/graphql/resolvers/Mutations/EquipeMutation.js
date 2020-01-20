@@ -7,7 +7,8 @@ const EquipeService = require('../../../services/equipeService');
 
 
 module.exports = {
-  async novaEquipe(_, dados) {
+  async novaEquipe(_, dados, context) {
+    context.validarIsLogged();
     return await EquipeService.novaEquipe(dados);
   },
 };

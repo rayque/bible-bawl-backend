@@ -4,11 +4,13 @@ const EquipeService = require("./../../../services/equipeService");
 const PerguntaService = require("./../../../services/perguntaService");
 
 module.exports = {
-    async setResposta(_, {dados}, {pubsub}) {
-        return  PerguntaService.setResposta(dados, pubsub);
+    async setResposta(_, {dados}, context) {
+        context.validarIsLogged();
+        return  PerguntaService.setResposta(dados, context.pubsub);
     },
 
-    async setPerguntaAtual(_, {pergunta}, {pubsub}) {
+    async setPerguntaAtual(_, {pergunta}, context) {
+        context.validarAdmin();
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -41,7 +43,7 @@ module.exports = {
                 ]
             });
 
-            pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
                 novaPerguntaAtual: perguntaAtual
             });
 
@@ -57,7 +59,8 @@ module.exports = {
         }
     },
 
-    async setStatusPergunta(_, {pergunta, status}, {pubsub}) {
+    async setStatusPergunta(_, {pergunta, status}, context) {
+        context.validarAdmin();
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -85,10 +88,9 @@ module.exports = {
                 throw new Error("Não foi possível atualizar status da pergunta");
             }
 
-
             const perguntaAtual =   PerguntaService.getPrimeiraPerguntaNaoRespondida();
 
-            pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
                 novaPerguntaAtual: perguntaAtual
             });
 
