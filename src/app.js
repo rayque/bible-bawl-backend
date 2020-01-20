@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { ApolloServer, PubSub } = require('apollo-server');
 const { importSchema } = require('graphql-import');
 const resolvers = require('./graphql/resolvers');
