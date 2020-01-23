@@ -4,7 +4,7 @@ const EquipeService = require("./../../../services/equipeService");
 
 module.exports = {
   getEquipes(_, args, context) {
-    context.validarAdmin();
+    context.validarIsLogged();
     return EquipeService.getEquipes();
   },
   async getPontuacaoEquipesByResposta(_, {pergunta_id}, context) {
