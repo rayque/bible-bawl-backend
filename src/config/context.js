@@ -12,21 +12,15 @@ module.exports = async ({req, connection}) => {
     auth = auth || req.headers.authorization
     const token = auth && auth.substring(7);
 
-    console.log(auth);
-    let auxiliar = null;
-    let admin = null;
-
+    let auxiliar = false;
+    let admin = false;
 
     if (token) {
         let payloadToken = jwt.decode(token, process.env.APP_JWT_AUTH_SECRET);
-
         if (new Date(payloadToken.exp * 1000) > new Date()) {
-            auxiliar = payloadToken;
-
-            if (payloadToken.userId) {
-                admin = payloadToken;
-            }
-
+            auxiliar = !!payloadToken.respondedorId || auxiliar;
+            admin = !!payloadToken.userId || admin;
+            console.log(auxiliar);
         } else {
             // throw new Error("Sessão Expirou");
         }
@@ -37,12 +31,11 @@ module.exports = async ({req, connection}) => {
     return {
         pubsub,
         validarAdmin() {
-            return true;
-            if (!admin) throw err
+            if(!admin) throw err;
         },
         validarIsLogged() {
-            return true;
-            if (!admin || !auxiliar) throw err
-        },
+            if (admin) return;
+            if (!auxiliar) throw err;
+        }
     };
 };

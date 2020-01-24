@@ -44,7 +44,6 @@ const responderPerguntas = async () => {
             );
 
 
-            console.log(dados);
             await PerguntaService.setResposta(dados, null);
 
         }
