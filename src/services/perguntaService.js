@@ -8,6 +8,18 @@ class PerguntaService {
         try {
             transaction = await ParticipantePergunta.sequelize.transaction();
 
+            const perguntaAtual = await Pergunta.findOne({
+                where: {pergunta_atual: 1}
+            });
+
+            if (!perguntaAtual) {
+                throw new Error("Não há pergunta disponível para responder");
+            }
+
+            if (perguntaAtual.id !== dados.pergunta_id) {
+                throw new Error("A pergunta que está tentando responder não é a pergunta atual");
+            }
+
             await ParticipantePergunta.findOrCreate(
                 {
                     where: {
