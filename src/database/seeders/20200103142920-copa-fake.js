@@ -4,7 +4,9 @@ const faker = require('faker');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await responderPerguntas();
+        if ('development' === process.env.NODE_ENV) {
+            await responderPerguntas();
+        }
     },
 
     down: (queryInterface, Sequelize) => {
@@ -12,19 +14,41 @@ module.exports = {
 };
 
 const responderPerguntas = async () => {
-
     const participantes = await Participante.findAll();
 
     for (let perguntaId = 1; perguntaId <= 120; perguntaId++) {
 
         for (const participante of participantes) {
+
+            const resp =  faker.random.boolean();
+
+            console.log({ perguntaId,  participante_id: participante.id, resp});
+
             const dados = {
                 participante_id: participante.id,
                 pergunta_id: perguntaId,
-                resposta: faker.random.boolean(),
+                resposta: resp,
             };
 
-            const status = await StatusPergunta.findAll(
+            await Pergunta.update(
+                {pergunta_atual: false},
+                {
+                    where: {
+                        pergunta_atual: true
+                    }
+                }
+            );
+
+            const result = await Pergunta.update(
+                {pergunta_atual: true},
+                {
+                    where: {
+                        id: perguntaId
+                    }
+                }
+            );
+
+            const status = await StatusPergunta.findOne(
                 {
                     where: {
                         nome: 'respondido',
@@ -34,7 +58,7 @@ const responderPerguntas = async () => {
           await Pergunta.update(
                 {
                     pergunta_atual: true,
-                    status_id: status[0].id
+                    status_id: status.id
                 },
                 {
                     where: {

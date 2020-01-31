@@ -20,7 +20,6 @@ module.exports = async ({req, connection}) => {
         if (new Date(payloadToken.exp * 1000) > new Date()) {
             auxiliar = !!payloadToken.respondedorId || auxiliar;
             admin = !!payloadToken.userId || admin;
-            console.log(auxiliar);
         } else {
             // throw new Error("Sessão Expirou");
         }
