@@ -5,7 +5,7 @@ type Query {
     getRespondedor(id: Int!): Respondedor!
     getEquipes: [Equipe]!
     getPerguntaAtual: Pergunta
-    getPrimeiraPerguntaNaoRespondida: Int
+    getPrimeiraPerguntaNaoRespondida: Pergunta
     getperguntasRespondidas: [Pergunta]
     login(dados :AuthInput!): AuthData
     getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoCategoria]!

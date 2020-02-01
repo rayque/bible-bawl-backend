@@ -8,6 +8,18 @@ class PerguntaService {
         try {
             transaction = await ParticipantePergunta.sequelize.transaction();
 
+            const perguntaAtual = await Pergunta.findOne({
+                where: {pergunta_atual: 1}
+            });
+
+            if (!perguntaAtual) {
+                throw new Error("Não há pergunta disponível para responder");
+            }
+
+            if (perguntaAtual.id !== dados.pergunta_id) {
+                throw new Error("A pergunta que está tentando responder não é a pergunta atual");
+            }
+
             await ParticipantePergunta.findOrCreate(
                 {
                     where: {
@@ -34,8 +46,6 @@ class PerguntaService {
 
             if (pubsub) {
                 const  pontuacao =  await EquipeService.getPontuacaoEquipesByPegunta(dados.pergunta_id);
-                console.clear();
-                console.log(pontuacao);
                 pubsub.publish('PONTUACAO_EQUIPES_BY_RESPOSTA', {
                     getPontuacaoEquipesByResposta: pontuacao
                 });
@@ -43,6 +53,28 @@ class PerguntaService {
 
             return !!result;
 
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
+    }
+    async getPrimeiraPerguntaNaoRespondida() {
+        try {
+            const statusNaoResp = await StatusPergunta.findOne(
+                {
+                    where: {
+                        nome: 'n_respondido',
+                    }
+                });
+
+            return Pergunta.findOne({
+                where: {status_id: statusNaoResp.id},
+                include: [
+                    {association: 'status'},
+                ]
+            });
         } catch (e) {
             if (transaction) {
                 transaction.rollback();

@@ -1,10 +1,12 @@
 const faker = require('faker');
-// faker.locale = "pt_BR";
+faker.locale = "pt_BR";
 const EquipeService = require('../../services/equipeService');
 
 module.exports = {
     up: async (queryInterface) => {
-        await setEquipes();
+        if ('development' === process.env.NODE_ENV) {
+            await setEquipes();
+        }
     },
 
     down: (queryInterface) => queryInterface.bulkDelete('equipes', null, {}),

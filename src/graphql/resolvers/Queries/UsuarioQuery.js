@@ -1,7 +1,8 @@
 const { Usuario } = require('../../../models');
 
 module.exports = {
-  getUsuarios() {
+  getUsuarios(_, args, context) {
+    context.validarIsLogged();
     return Usuario
       .findAll()
       .then((users) => users.map((user) => ({

@@ -1,50 +1,24 @@
 const {Pergunta, StatusPergunta, Respostas, Equipe, Categoria} = require('../../../models');
 const EquipeService = require('./../../../services/equipeService');
 const ResultadoService = require('./../../../services/resultadoService');
+const PerguntaService = require('./../../../services/perguntaService');
 
 module.exports = {
-    async getPerguntaAtual() {
-        const pergunta = await Pergunta
-            .findOne({
-                where: {pergunta_atual: 1},
-                include: [
-                    {association: 'status'},
-                ]
-
-            });
-        return pergunta;
+    getPerguntaAtual(_, args, context) {
+        context.validarIsLogged();
+        return Pergunta.findOne({
+            where: {pergunta_atual: 1},
+            include: [
+                {association: 'status'},
+            ]
+        });
     },
-
-    async getPrimeiraPerguntaNaoRespondida() {
-        try {
-            const statusNaoResp = await StatusPergunta.findAll(
-                {
-                    where: {
-                        nome: 'n_respondido',
-                    }
-                });
-
-            return Pergunta
-                .findAll({where: {status_id: statusNaoResp[0].id}})
-                .then(perguntas => {
-                    if (!perguntas.length) {
-                        return 0;
-                    }
-
-                    return perguntas[0].id;
-                })
-                .catch(() => {
-                    throw new Error('Erro ao buscar primeira pergunta não respondida');
-                });
-        } catch (e) {
-            if (transaction) {
-                transaction.rollback();
-            }
-            throw new Error(e);
-        }
+    async getPrimeiraPerguntaNaoRespondida(_, args, context) {
+        context.validarIsLogged();
+        return PerguntaService.getPrimeiraPerguntaNaoRespondida();
     },
-
-    async getperguntasRespondidas() {
+    async getperguntasRespondidas(_, args, context) {
+        context.validarAdmin();
         try {
             const statusRep = await StatusPergunta.findAll(
                 {
@@ -89,8 +63,9 @@ module.exports = {
             throw new Error(e);
         }
     },
+    async getResultadoCopa(_, {nome_categoria, tipo}, context) {
+        context.validarAdmin();
 
-    async getResultadoCopa(_, {nome_categoria, tipo}) {
         try {
             if ('equipe' === tipo) {
                 return  await ResultadoService.getResultadoEquipe(nome_categoria);
@@ -105,7 +80,9 @@ module.exports = {
         }
     },
 
-    async getStatusPergunta() {
+    async getStatusPergunta(_, args, context) {
+        context.validarIsLogged();
+
         return StatusPergunta.findAll();
     }
 

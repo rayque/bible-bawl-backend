@@ -4,11 +4,13 @@ const EquipeService = require("./../../../services/equipeService");
 const PerguntaService = require("./../../../services/perguntaService");
 
 module.exports = {
-    async setResposta(_, {dados}, {pubsub}) {
-        return  PerguntaService.setResposta(dados, pubsub);
+    async setResposta(_, {dados}, context) {
+        context.validarIsLogged();
+        return  PerguntaService.setResposta(dados, context.pubsub);
     },
 
-    async setPerguntaAtual(_, {pergunta}, {pubsub}) {
+    async setPerguntaAtual(_, {pergunta}, context) {
+        context.validarAdmin();
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -23,19 +25,8 @@ module.exports = {
                 { transaction }
             );
 
-            const status = await StatusPergunta.findOne(
-                {
-                    where: {
-                        nome: 'respondido',
-                    }
-                },
-                { transaction });
-
             const result = await Pergunta.update(
-                {
-                    pergunta_atual: true,
-                    status_id: status.id
-                },
+                {pergunta_atual: true},
                 {
                     where: {
                         id: pergunta
@@ -44,11 +35,19 @@ module.exports = {
                 { transaction }
             );
 
-            await transaction.commit();
 
-            pubsub.publish('NOVA_PERGUNTA_ATUAL', {
-                novaPerguntaAtual: pergunta
+            const perguntaAtual =  Pergunta.findOne({
+                where: {id: pergunta},
+                include: [
+                    {association: 'status'},
+                ]
             });
+
+            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+                novaPerguntaAtual: perguntaAtual
+            });
+
+            await transaction.commit();
 
             return pergunta;
 
@@ -60,7 +59,8 @@ module.exports = {
         }
     },
 
-    async setStatusPergunta(_, {pergunta, status}) {
+    async setStatusPergunta(_, {pergunta, status}, context) {
+        context.validarAdmin();
         let transaction;
         try {
             transaction = await Pergunta.sequelize.transaction();
@@ -87,6 +87,12 @@ module.exports = {
             if (!result.length) {
                 throw new Error("Não foi possível atualizar status da pergunta");
             }
+
+            const perguntaAtual =   PerguntaService.getPrimeiraPerguntaNaoRespondida();
+
+            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+                novaPerguntaAtual: perguntaAtual
+            });
 
             await transaction.commit();
 

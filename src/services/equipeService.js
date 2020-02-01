@@ -1,4 +1,4 @@
-const { Respostas, Equipe, Participante, Categoria} = require("../models");
+const { Respostas, Equipe, Participante, Categoria, StatusPergunta} = require("../models");
 const { Op } = require('sequelize');
 const moment = require('moment');
 
@@ -52,6 +52,10 @@ class EquipeService {
   }
 
   async getPontuacaoEquipesByPegunta(pergunta_id) {
+
+    const status = await StatusPergunta.findOne({
+      where: {nome: 'respondido'}
+    });
     const categorias = await Categoria.findAll({
       include: [
         {
@@ -71,11 +75,15 @@ class EquipeService {
       ]
     });
 
-    const dados = categorias.map(categoria => {
+    return categorias.map(categoria => {
 
       const equipes = categoria.equipes.map(equipe => {
         return equipe.participantes.map(participante => {
-          const pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
+          let pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
+
+          if (participante.perguntas[0].status_id !== status.id) {
+             pontuacao = 0;
+          }
 
           return {
             nome: participante.nome,
@@ -91,7 +99,6 @@ class EquipeService {
       };
     });
 
-    return dados;
   }
 
   getPontuacaoIndividualFormatado(pontos) {

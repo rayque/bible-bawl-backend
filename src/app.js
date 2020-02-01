@@ -1,14 +1,14 @@
-const { ApolloServer, PubSub } = require('apollo-server');
+require('dotenv').config();
+const { ApolloServer } = require('apollo-server');
 const { importSchema } = require('graphql-import');
 const resolvers = require('./graphql/resolvers');
-
-const pubsub = new PubSub();
+const  context = require('./config/context')
 
 const schemaPath = 'src/graphql/schemas/index.graphql';
 const server = new ApolloServer({
     typeDefs: importSchema(schemaPath),
     resolvers,
-    context: ({req, res}) => ({req, res, pubsub})
+    context
 });
 
 // server.listen();

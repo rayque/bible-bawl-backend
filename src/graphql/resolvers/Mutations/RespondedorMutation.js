@@ -3,7 +3,8 @@ const { Op, Sequelize } = require('sequelize');
 const EquipeService = require("./../../../services/equipeService")
 
 module.exports = {
-  async novoRespondedor(_, { nome }) {
+  async novoRespondedor(_, { nome }, context) {
+    context.validarAdmin();
     try {
       const respondedor = await Respondedor.findAll({
         where: {
@@ -21,7 +22,8 @@ module.exports = {
       throw new Error(e);
     }
   },
-  async setEquipesRespondedor(_, {dados}) {
+  async setEquipesRespondedor(_, {dados},context) {
+    context.validarAdmin();
     let transaction;
     try {
       transaction = await Equipe.sequelize.transaction();

@@ -1,4 +1,5 @@
 const { Usuario, Respondedor } = require('../../../models');
+const {JWT_SECRET} = require('../../../utils');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -8,26 +9,29 @@ module.exports = {
 
         const data = dados;
         if (data.cod_acesso) {
-            const respondedor = await Respondedor.findAll({
+            const respondedor = await Respondedor.findOne({
                 where: {cod_acesso: data.cod_acesso}
             });
 
-            if (!respondedor.length) {
+            if (!respondedor) {
                 throw new Error('Código incorreto');
             }
 
+            const agora = Math.floor(Date.now() / 1000);
+            const tresDias = (3 * 24 * 60 * 60);
+
             const token = jwt.sign(
                 {
-                    respondedorId: respondedor[0].id,
+                    respondedorId: respondedor.id,
                     permissao: 'auxiliar',
-                    nome: respondedor[0].nome,
+                    nome: respondedor.nome,
+                    iat: agora,
+                    exp: agora + tresDias
                 },
-                'somesupersecretkey',
-                {
-                    expiresIn: '3h'
-                }
+                JWT_SECRET
             );
             return { token, tokenExpiration: 3 };
+
         } else if(data.email && data.password) {
 
             const user = await Usuario.findAll({
@@ -43,16 +47,18 @@ module.exports = {
                 throw new Error('Usuário ou senha está incorreto');
             }
 
+            const agora = Math.floor(Date.now() / 1000)
+            const tresDias = (3 * 24 * 60 * 60);
+
             const token = jwt.sign(
                 {
                     userId: user[0].id,
                     nome: user[0].nome,
-                    permissao: 'admin'
+                    permissao: 'admin',
+                    iat: agora,
+                    exp: agora + tresDias
                 },
-                'somesupersecretkey',
-                {
-                    expiresIn: '3h'
-                }
+                JWT_SECRET
             );
             return { token, tokenExpiration: 3 };
 

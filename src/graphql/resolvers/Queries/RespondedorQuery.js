@@ -1,7 +1,8 @@
 const { Respondedor } = require('./../../../models');
 
 module.exports = {
-  getRespondedores(_, __, {pubsub}) {
+  getRespondedores(_, args, context) {
+    context.validarAdmin();
     return Respondedor
       .findAll({include: ['equipes']})
       .then(respondedores => {
@@ -24,7 +25,8 @@ module.exports = {
         throw new Error('Erro ao buscar respondedorees');
       });
   },
-  getRespondedor(_, {id}) {
+  getRespondedor(_, {id}, context) {
+    context.validarIsLogged();
     return Respondedor
       .findByPk(id, {
         include: [
