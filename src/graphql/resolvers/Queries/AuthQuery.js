@@ -4,6 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
+function getExpirationTime() {
+    /* 360 dias */
+    return 360 * 24 * 60 * 60;
+}
+
 module.exports = {
     async login(_, {dados}) {
 
@@ -18,7 +23,7 @@ module.exports = {
             }
 
             const agora = Math.floor(Date.now() / 1000);
-            const tresDias = (3 * 24 * 60 * 60);
+            const expirationTime = getExpirationTime();
 
             const token = jwt.sign(
                 {
@@ -26,7 +31,7 @@ module.exports = {
                     permissao: 'auxiliar',
                     nome: respondedor.nome,
                     iat: agora,
-                    exp: agora + tresDias
+                    exp: agora + expirationTime
                 },
                 JWT_SECRET
             );
@@ -47,8 +52,8 @@ module.exports = {
                 throw new Error('Usuário ou senha está incorreto');
             }
 
-            const agora = Math.floor(Date.now() / 1000)
-            const tresDias = (3 * 24 * 60 * 60);
+            const agora = Math.floor(Date.now() / 1000);
+            const expirationTime = getExpirationTime();
 
             const token = jwt.sign(
                 {
@@ -56,7 +61,7 @@ module.exports = {
                     nome: user[0].nome,
                     permissao: 'admin',
                     iat: agora,
-                    exp: agora + tresDias
+                    exp: agora + expirationTime
                 },
                 JWT_SECRET
             );
