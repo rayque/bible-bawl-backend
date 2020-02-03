@@ -101,6 +101,30 @@ class EquipeService {
 
   }
 
+  async editarEquipe( {participantes}) {
+    console.log(participantes);
+
+
+    const promisses = participantes.map(participante => {
+      return  Participante.update(
+          {nome: participante.nome},
+          {data_nascimento: participante.data_nascimento},
+          {where: {id: participante.id}}
+          );
+    });
+
+
+
+    const allParticipantes = await Promise.all(promises);
+
+    console.log(allParticipantes);
+
+    return true;
+
+
+  }
+
+
   getPontuacaoIndividualFormatado(pontos) {
     return pontos ? pontos * 10 : 0;
   }
