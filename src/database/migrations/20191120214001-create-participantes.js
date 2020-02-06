@@ -21,6 +21,12 @@ module.exports = {
       references: { model: 'equipes', key: 'id' },
       onUpdate: 'CASCADE',
     },
+    status_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'status_participantes', key: 'id' },
+      onUpdate: 'CASCADE',
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,

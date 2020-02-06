@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     nome: DataTypes.STRING,
     data_nascimento: DataTypes.DATEONLY,
     equipe_id: DataTypes.INTEGER,
+    status_id: DataTypes.INTEGER,
   },
   {
     freezeTableName: true,

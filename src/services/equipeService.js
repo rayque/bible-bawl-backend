@@ -1,4 +1,4 @@
-const {Respostas, Equipe, Participante, Categoria, StatusPergunta} = require("../models");
+const {Pergunta, Equipe, Participante, Categoria, StatusPergunta, StatusParticipante} = require("../models");
 const {Op} = require('sequelize');
 const moment = require('moment');
 
@@ -124,19 +124,28 @@ class EquipeService {
                 {where: {id: participante.equipe_id}},
                 {transaction}
             );
+
+            const copaIniciou = await  this.verificaCopaIniciou();
             const promises = participantes.map(async participante => {
+                let dados = {
+                    nome: participante.nome,
+                    data_nascimento: participante.data_nascimento
+                };
 
-
-              // Verificar se a copa ja começou e marcar para a pontuação não valer para classificação Individual
+                const participanteBd = await Participante.findByPk(participante.id);
+                /*
+                    Verificar se a copa ja começou e mudar o status  do participante
+                    para a pontuação não valer para classificação Individual
+                */
+                if (copaIniciou && (participanteBd.nome !== participante.nome)) {
+                    dados.status_id = 2;
+                }
 
                 return Participante.update(
-                    {
-                        nome: participante.nome,
-                        data_nascimento: participante.data_nascimento
-                    },
+                    dados,
                     {where: {id: participante.id}},
                     {transaction}
-                )
+                );
             });
 
             const allParticipantes = await Promise.all(promises);
@@ -228,18 +237,23 @@ class EquipeService {
                 },
                 {transaction})
                 .catch((e) => {
-                    throw new Error(e.errors[0].message);
+                    throw new Error(e.errors[0].message|| 'Ocoreu um erro ao salvar nome da equipe' );
                 });
+
+            const status = await StatusParticipante.findOne({
+                where: { nome: 'titular'}
+            });
 
             // Cadastro dos Participantes
             const promises = Object.keys(data).map(async (key) => Participante.create({
                     nome: data[key].nome,
                     data_nascimento: data[key].data_nascimento,
                     equipe_id: equipe.id,
+                    status_id: status.id
                 },
                 {transaction})
                 .catch((e) => {
-                    throw new Error(e.errors[0].message);
+                    throw new Error(e.errors[0].message || 'Ocoreu um erro ao slavar participantes'  );
                 }));
 
             const allParticipantes = await Promise.all(promises);
@@ -249,7 +263,6 @@ class EquipeService {
                 nome: part.nome,
                 data_nascimento: part.data_nascimento,
             }));
-
 
             await transaction.commit();
 
@@ -266,6 +279,17 @@ class EquipeService {
         }
     }
 
+    async verificaCopaIniciou() {
+        const status = await StatusPergunta.findOne({
+            where: {nome: 'respondido'}
+        });
+
+        const perguntaRespondida = await Pergunta.findAll({
+            where: {status_id: status.id}
+        });
+
+        return !!perguntaRespondida.length;
+    }
 
 };
 

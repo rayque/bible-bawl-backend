@@ -1,5 +1,5 @@
 const faker = require('faker');
-faker.locale = "pt_BR";
+// faker.locale = "pt_BR";
 const EquipeService = require('../../services/equipeService');
 
 module.exports = {
