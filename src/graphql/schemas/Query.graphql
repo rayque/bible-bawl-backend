@@ -10,5 +10,5 @@ type Query {
     login(dados :AuthInput!): AuthData
     getPontuacaoEquipesByResposta(pergunta_id: Int!): [PontuacaoCategoria]!
     getResultadoCopa(nome_categoria: String!, tipo: String!): [ResultadoCopa]!
-    getStatusPergunta: [StatusPergunta!]!
+    getStatusPergunta: [Status!]!
 }

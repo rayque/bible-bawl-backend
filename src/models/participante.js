@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'participante_id',
       as: 'perguntas'
     });
+    Participante.belongsTo(models.StatusParticipante, {
+      foreignKey: 'status_id',
+      as: 'status'
+    });
   };
 
   return Participante;
