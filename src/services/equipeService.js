@@ -279,6 +279,36 @@ class EquipeService {
         }
     }
 
+    async excluirEquipe({equipe_id}) {
+        let transaction;
+        try {
+            transaction = await Equipe.sequelize.transaction();
+
+            const copaIniciou = await this.verificaCopaIniciou();
+            if (copaIniciou) {
+                throw new Error("A copa já iniciou, portanto, não é possível excluir uma equipe.");
+            }
+
+            await Participante.destroy({
+                where: {equipe_id: equipe_id}
+            }, transaction);
+
+            await  Equipe.destroy({
+                where: {id: equipe_id}
+            }, transaction);
+
+            await transaction.commit();
+
+            return true;
+        } catch (err) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(err);
+        }
+    }
+
+
     async verificaCopaIniciou() {
         const status = await StatusPergunta.findOne({
             where: {nome: 'respondido'}
@@ -287,6 +317,7 @@ class EquipeService {
         const perguntaRespondida = await Pergunta.findAll({
             where: {status_id: status.id}
         });
+
 
         return !!perguntaRespondida.length;
     }

@@ -7,4 +7,5 @@ type Mutation {
     setPerguntaAtual(pergunta: Int): Int!
     setStatusPergunta(pergunta: Int, status: String!): Boolean!
     setEditarEquipe(participantes: [EditarParticipanteInput!]!): Boolean!
+    excluirEquipe(equipe_id: Int): Boolean!
 }

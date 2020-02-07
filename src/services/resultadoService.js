@@ -25,7 +25,6 @@ class ResultadoService {
                             {
                                 association: 'perguntas',
                                 where: {status_id: statusRespondido.id}
-
                             }
                         ]
                     },

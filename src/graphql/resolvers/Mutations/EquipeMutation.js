@@ -15,4 +15,9 @@ module.exports = {
     context.validarIsLogged();
     return EquipeService.editarEquipe(dados);
   },
+  async excluirEquipe(_, dados, context) {
+    context.validarIsLogged();
+    return EquipeService.excluirEquipe(dados);
+  },
+
 };
