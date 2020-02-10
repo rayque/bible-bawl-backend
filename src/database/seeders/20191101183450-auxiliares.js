@@ -1,5 +1,7 @@
 const faker = require('faker');
 // faker.locale = "pt_BR";
+const runSeed = require('../config');
+
 const AuxiliarService =  require('../../services/auxiliarService')
 
 
@@ -14,7 +16,7 @@ const getRespondedores = async () => {
 
 module.exports = {
     up: async () => {
-        if ('development' === process.env.NODE_ENV) {
+        if ('development' === process.env.NODE_ENV && runSeed.auxiliares) {
             await getRespondedores();
         }
     },

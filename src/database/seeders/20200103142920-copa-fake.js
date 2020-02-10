@@ -1,11 +1,12 @@
 const {Participante, StatusPergunta, Pergunta} = require('../../models');
 const PerguntaService = require('../../services/perguntaService');
 const faker = require('faker');
+const runSeed = require('../config');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        if ('development' === process.env.NODE_ENV) {
-            // await responderPerguntas();
+        if ('development' === process.env.NODE_ENV && runSeed.copaFake) {
+            await responderPerguntas();
         }
     },
 
@@ -16,7 +17,7 @@ module.exports = {
 const responderPerguntas = async () => {
     const participantes = await Participante.findAll();
 
-    for (let perguntaId = 1; perguntaId <= 10; perguntaId++) {
+    for (let perguntaId = 1; perguntaId <= 5; perguntaId++) {
 
         for (const participante of participantes) {
 
