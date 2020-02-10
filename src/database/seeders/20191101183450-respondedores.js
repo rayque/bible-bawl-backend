@@ -1,27 +1,22 @@
 const faker = require('faker');
 // faker.locale = "pt_BR";
+const AuxiliarService =  require('../../services/auxiliarService')
 
-const getRespondedores = () => {
-    let respondedores = [];
+
+const getRespondedores = async () => {
+
     for (let i = 0; i < 10; i++) {
-        const auxiliar = {
-            nome:  faker.name.firstName() +' '+faker.name.lastName(),
-            cod_acesso: Math.floor(Math.random() * 100000) + 100000,
-            created_at: new Date(),
-            updated_at: new Date(),
-        };
-        respondedores.push(auxiliar);
+        const nome = faker.name.firstName() + ' ' + faker.name.lastName();
+        await AuxiliarService.novoRespondedor(nome);
     }
-    return respondedores;
 }
 
 
 module.exports = {
-    up: (queryInterface) => queryInterface.bulkInsert(
-        'respondedores',
-        getRespondedores(),
-        {}
-    ),
-
-    down: (queryInterface) => queryInterface.bulkDelete('respondedores', null, {}),
-};
+    up: async () => {
+        if ('development' === process.env.NODE_ENV) {
+            await getRespondedores();
+        }
+    },
+    down: () =>{}
+}

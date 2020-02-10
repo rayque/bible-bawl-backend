@@ -13,6 +13,7 @@ module.exports = {
     },
     cod_acesso: {
       allowNull: true,
+      unique: true,
       type: DataTypes.STRING,
     },
     created_at: {

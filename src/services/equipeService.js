@@ -65,8 +65,7 @@ class EquipeService {
                             association: 'participantes',
                             include: [
                                 {
-                                    association: 'perguntas',
-                                    where: {id: pergunta_id}
+                                    association: 'perguntas'
                                 }
                             ]
                         },
@@ -76,13 +75,16 @@ class EquipeService {
         });
 
         return categorias.map(categoria => {
-
             const equipes = categoria.equipes.map(equipe => {
                 return equipe.participantes.map(participante => {
-                    let pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
 
-                    if (participante.perguntas[0].status_id !== status.id) {
-                        pontuacao = 0;
+                    let pontuacao = 0;
+                    if (participante.perguntas.length) {
+                        pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
+
+                        if (participante.perguntas[0].status_id !== status.id) {
+                            pontuacao = 0;
+                        }
                     }
 
                     return {

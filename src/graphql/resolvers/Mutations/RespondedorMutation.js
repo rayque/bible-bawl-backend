@@ -1,26 +1,12 @@
 const { Respondedor, Equipe} = require('./../../../models');
 const { Op, Sequelize } = require('sequelize');
 const EquipeService = require("./../../../services/equipeService")
+const AuxiliarService = require("./../../../services/auxiliarService")
 
 module.exports = {
   async novoRespondedor(_, { nome }, context) {
     context.validarAdmin();
-    try {
-      const respondedor = await Respondedor.findAll({
-        where: {
-          nome,
-        },
-      });
-
-      if (respondedor.length) {
-        throw new Error('Já existe um respondedor com este nome.');
-      }
-
-      const codAcesso = Math.floor(Math.random() * 100000) + 100000;
-      return await Respondedor.create({ nome, cod_acesso: codAcesso });
-    } catch (e) {
-      throw new Error(e);
-    }
+    return AuxiliarService.novoRespondedor(nome);
   },
   async setEquipesRespondedor(_, {dados},context) {
     context.validarAdmin();

@@ -5,7 +5,7 @@ const faker = require('faker');
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         if ('development' === process.env.NODE_ENV) {
-            await responderPerguntas();
+            // await responderPerguntas();
         }
     },
 
@@ -16,7 +16,7 @@ module.exports = {
 const responderPerguntas = async () => {
     const participantes = await Participante.findAll();
 
-    for (let perguntaId = 1; perguntaId <= 120; perguntaId++) {
+    for (let perguntaId = 1; perguntaId <= 10; perguntaId++) {
 
         for (const participante of participantes) {
 

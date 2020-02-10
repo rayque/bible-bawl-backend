@@ -33,8 +33,10 @@ module.exports = async ({req, connection}) => {
             if(!admin) throw err;
         },
         validarIsLogged() {
+
             if (admin) return;
-            if (!auxiliar) throw err;
+            if (auxiliar) return;
+            throw err;
         }
     };
 };
