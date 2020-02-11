@@ -16,6 +16,9 @@ module.exports = {
 const qtdEquipes = 20;
 
 async function setEquipes() {
+    console.log()
+    console.log("--------------- EQUIPES FAKE ---------------");
+    console.log()
     let categoria = 1;
     for (let equipe = 1; equipe <= qtdEquipes; equipe += 1) {
 

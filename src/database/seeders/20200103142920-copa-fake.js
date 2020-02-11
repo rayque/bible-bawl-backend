@@ -15,6 +15,10 @@ module.exports = {
 };
 
 const responderPerguntas = async () => {
+    console.log();
+    console.log("--------------- COPA FAKE ---------------");
+    console.log();
+
     const participantes = await Participante.findAll();
 
     for (let perguntaId = 1; perguntaId <= 5; perguntaId++) {
