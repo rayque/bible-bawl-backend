@@ -1,10 +1,11 @@
 const faker = require('faker');
-faker.locale = "pt_BR";
+// faker.locale = "pt_BR";
 const EquipeService = require('../../services/equipeService');
+const runSeed = require('../config');
 
 module.exports = {
     up: async (queryInterface) => {
-        if ('development' === process.env.NODE_ENV) {
+        if ('development' === process.env.NODE_ENV && runSeed.equipes) {
             await setEquipes();
         }
     },

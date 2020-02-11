@@ -25,6 +25,7 @@ type PontuacaoCategoria {
 type ResultadoCopa {
     classificacao: Int!
     nome: String!
+    status_participante: Status
     pontuacao: Int!
     acertos_consecutivos: Int
     acertos_bonus: Int

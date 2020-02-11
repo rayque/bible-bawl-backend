@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, DataTypes) => queryInterface.createTable('respondedores', {
+  up: (queryInterface, DataTypes) => queryInterface.createTable('status_participantes', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -11,10 +11,10 @@ module.exports = {
       type: DataTypes.STRING,
       unique: true,
     },
-    cod_acesso: {
-      allowNull: true,
-      unique: true,
+    descricao: {
+      allowNull: false,
       type: DataTypes.STRING,
+      unique: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -26,5 +26,5 @@ module.exports = {
     },
   }),
 
-  down: (queryInterface) => queryInterface.dropTable('respondedores'),
+  down: (queryInterface) => queryInterface.dropTable('status_participantes'),
 };

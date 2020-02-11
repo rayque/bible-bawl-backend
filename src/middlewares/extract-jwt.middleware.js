@@ -1,7 +1,5 @@
 const {RequestHandler} = require('express');
 const {JWT_SECRET} = require('../utils');
-const {  }
-
 const jwt = require('jsonwebtoken');
 
 const exctractJwtMidlleware = () => {

@@ -25,7 +25,6 @@ class ResultadoService {
                             {
                                 association: 'perguntas',
                                 where: {status_id: statusRespondido.id}
-
                             }
                         ]
                     },
@@ -72,6 +71,9 @@ class ResultadoService {
                     {
                         association: 'equipe',
                         where: {categoria_id: categoria.id}
+                    },
+                    {
+                        association: 'status'
                     }
                 ]
             });
@@ -86,6 +88,7 @@ class ResultadoService {
             return result.map(classificacao => {
                 return {
                     ...classificacao,
+                    status_participante: classificacao.status,
                     acertos_consecutivos: classificacao.bonus
                 }
             });
@@ -178,7 +181,12 @@ class ResultadoService {
                     id: participante.id,
                     nome: participante.nome,
                     pontuacao: totalPontosParticipante,
-                    bonus: acertos_consecutivos
+                    bonus: acertos_consecutivos,
+                    status: {
+                    id: participante.status.id,
+                        nome: participante.status.nome,
+                        descricao: participante.status.descricao
+                }
                 }
             })
         } catch (e) {

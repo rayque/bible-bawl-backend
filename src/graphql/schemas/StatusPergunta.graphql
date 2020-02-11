@@ -1,4 +1,4 @@
-type StatusPergunta{
+type Status{
     id: Int!
     nome: String!
     descricao: String!

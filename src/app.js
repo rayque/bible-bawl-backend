@@ -15,10 +15,11 @@ const server = new ApolloServer({
 
 server
   .listen()
-  .then(({ url }) => {
+  .then(({ url, subscriptionsUrl }) => {
     console.clear();
     console.log('---------------------');
-    console.log(`Executando em ${url}`);
+      console.log(`🚀 Server ready at ${url}`);
+      console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`);
     console.log('---------------------');
   })
   .catch((err) => {

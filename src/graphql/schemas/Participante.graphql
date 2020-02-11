@@ -2,9 +2,17 @@ type Participante {
     id: Int!
     nome: String!
     data_nascimento: String!
+    status: Status!
 }
 
 input ParticipanteInput {
+    nome: String!
+    data_nascimento: String!
+}
+
+
+input EditarParticipanteInput {
+    id: Int!
     nome: String!
     data_nascimento: String!
 }

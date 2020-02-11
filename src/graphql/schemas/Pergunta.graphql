@@ -1,5 +1,5 @@
 type Pergunta {
     id: Int!
     pergunta_atual: Boolean
-    status: StatusPergunta!
+    status: Status!
 }

@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     nome: DataTypes.STRING,
     data_nascimento: DataTypes.DATEONLY,
     equipe_id: DataTypes.INTEGER,
+    status_id: DataTypes.INTEGER,
   },
   {
     freezeTableName: true,
@@ -18,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       through: models.ParticipantePergunta,
       foreignKey: 'participante_id',
       as: 'perguntas'
+    });
+    Participante.belongsTo(models.StatusParticipante, {
+      foreignKey: 'status_id',
+      as: 'status'
     });
   };
 

@@ -11,4 +11,13 @@ module.exports = {
     context.validarIsLogged();
     return await EquipeService.novaEquipe(dados);
   },
+  async setEditarEquipe(_, dados, context) {
+    context.validarIsLogged();
+    return EquipeService.editarEquipe(dados);
+  },
+  async excluirEquipe(_, dados, context) {
+    context.validarIsLogged();
+    return EquipeService.excluirEquipe(dados);
+  },
+
 };
