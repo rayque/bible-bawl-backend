@@ -53,9 +53,6 @@ class EquipeService {
 
     async getPontuacaoEquipesByPegunta(pergunta_id) {
 
-        const status = await StatusPergunta.findOne({
-            where: {nome: 'respondido'}
-        });
         const categorias = await Categoria.findAll({
             include: [
                 {
@@ -80,10 +77,16 @@ class EquipeService {
 
                     let pontuacao = 0;
                     if (participante.perguntas.length) {
-                        pontuacao = this.getPontuacaoIndividualFormatado(participante.perguntas[0].ParticipantePergunta.resposta);
 
-                        if (participante.perguntas[0].status_id !== status.id) {
-                            pontuacao = 0;
+                        let perguntaAtual = participante.perguntas.filter(p => {
+                            return p.id === pergunta_id
+                        });
+                        perguntaAtual = perguntaAtual.length > 0 ? perguntaAtual[0] : null
+
+                        if (perguntaAtual) {
+                            if (perguntaAtual.ParticipantePergunta.pergunta_id === pergunta_id) {
+                                pontuacao = this.getPontuacaoIndividualFormatado(perguntaAtual.ParticipantePergunta.resposta);
+                            }
                         }
                     }
 
