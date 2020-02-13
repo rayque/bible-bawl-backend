@@ -32,13 +32,14 @@ module.exports = async ({req, connection}) => {
     return {
         pubsub,
         validarAdmin() {
-            if (connection) return;
-            if (!admin) throw err;
+            return;
+            // if (!admin) throw err;
         },
         validarIsLogged() {
-            if (admin) return;
-            if (auxiliar) return;
-            throw err;
+            return;
+            // if (admin) return;
+            // if (auxiliar) return;
+            // throw err;
         }
     };
 };
