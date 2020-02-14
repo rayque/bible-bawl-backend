@@ -82,6 +82,55 @@ class PerguntaService {
             throw new Error(e);
         }
     }
+
+    async setPerguntaAtual(pergunta, context) {
+        let transaction;
+        try {
+            transaction = await Pergunta.sequelize.transaction();
+
+            await Pergunta.update(
+                {pergunta_atual: false},
+                {
+                    where: {
+                        pergunta_atual: true
+                    }
+                },
+                { transaction }
+            );
+
+            const result = await Pergunta.update(
+                {pergunta_atual: true},
+                {
+                    where: {
+                        id: pergunta
+                    }
+                },
+                { transaction }
+            );
+
+
+            const perguntaAtual =  Pergunta.findOne({
+                where: {id: pergunta},
+                include: [
+                    {association: 'status'},
+                ]
+            });
+
+            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+                novaPerguntaAtual: perguntaAtual
+            });
+
+            await transaction.commit();
+
+            return pergunta;
+
+        } catch (e) {
+            if (transaction) {
+                transaction.rollback();
+            }
+            throw new Error(e);
+        }
+    }
 }
 
 module.exports = new PerguntaService();

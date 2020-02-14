@@ -6,6 +6,9 @@ const AuxiliarService =  require('../../services/auxiliarService')
 
 
 const getRespondedores = async () => {
+    console.log();
+    console.log("--------------- AUXILIARES FAKE ---------------");
+    console.log();
 
     for (let i = 0; i < 10; i++) {
         const nome = faker.name.firstName() + ' ' + faker.name.lastName();

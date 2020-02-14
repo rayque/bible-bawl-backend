@@ -11,52 +11,53 @@ module.exports = {
 
     async setPerguntaAtual(_, {pergunta}, context) {
         context.validarAdmin();
-        let transaction;
-        try {
-            transaction = await Pergunta.sequelize.transaction();
-
-            await Pergunta.update(
-                {pergunta_atual: false},
-                {
-                    where: {
-                        pergunta_atual: true
-                    }
-                },
-                { transaction }
-            );
-
-            const result = await Pergunta.update(
-                {pergunta_atual: true},
-                {
-                    where: {
-                        id: pergunta
-                    }
-                },
-                { transaction }
-            );
-
-
-            const perguntaAtual =  Pergunta.findOne({
-                where: {id: pergunta},
-                include: [
-                    {association: 'status'},
-                ]
-            });
-
-            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
-                novaPerguntaAtual: perguntaAtual
-            });
-
-            await transaction.commit();
-
-            return pergunta;
-
-        } catch (e) {
-            if (transaction) {
-                transaction.rollback();
-            }
-            throw new Error(e);
-        }
+        return PerguntaService.setPerguntaAtual(pergunta, context)
+        // let transaction;
+        // try {
+        //     transaction = await Pergunta.sequelize.transaction();
+        //
+        //     await Pergunta.update(
+        //         {pergunta_atual: false},
+        //         {
+        //             where: {
+        //                 pergunta_atual: true
+        //             }
+        //         },
+        //         { transaction }
+        //     );
+        //
+        //     const result = await Pergunta.update(
+        //         {pergunta_atual: true},
+        //         {
+        //             where: {
+        //                 id: pergunta
+        //             }
+        //         },
+        //         { transaction }
+        //     );
+        //
+        //
+        //     const perguntaAtual =  Pergunta.findOne({
+        //         where: {id: pergunta},
+        //         include: [
+        //             {association: 'status'},
+        //         ]
+        //     });
+        //
+        //     context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
+        //         novaPerguntaAtual: perguntaAtual
+        //     });
+        //
+        //     await transaction.commit();
+        //
+        //     return pergunta;
+        //
+        // } catch (e) {
+        //     if (transaction) {
+        //         transaction.rollback();
+        //     }
+        //     throw new Error(e);
+        // }
     },
 
     async setStatusPergunta(_, {pergunta, status}, context) {
@@ -88,11 +89,9 @@ module.exports = {
                 throw new Error("Não foi possível atualizar status da pergunta");
             }
 
-            const perguntaAtual =   PerguntaService.getPrimeiraPerguntaNaoRespondida();
+            const perguntaNaoRespondida =   await PerguntaService.getPrimeiraPerguntaNaoRespondida();
 
-            context.pubsub.publish('NOVA_PERGUNTA_ATUAL', {
-                novaPerguntaAtual: perguntaAtual
-            });
+            await PerguntaService.setPerguntaAtual(perguntaNaoRespondida.id, context);
 
             await transaction.commit();
 
