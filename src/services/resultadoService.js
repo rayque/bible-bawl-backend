@@ -150,8 +150,8 @@ class ResultadoService {
 
             return participantes.map(participante => {
                 let totalPontosParticipante = 0;
-                let acertosSequencia = [];
                 let contAcertoSequencia = 0;
+                let acertosSequencia = [contAcertoSequencia];
 
                 participante.perguntas.forEach(pergunta => {
                     /* conta pontuação participante */

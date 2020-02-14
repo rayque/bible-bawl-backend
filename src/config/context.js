@@ -6,7 +6,7 @@ module.exports = async ({req, connection}) => {
     let token = "";
 
     if (typeof connection === "object") {
-        console.log(connection);
+        // console.log(connection);
 
         // token =  connection.context.headers && connection.context.headers.authorization;
     }
