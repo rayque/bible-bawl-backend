@@ -14,3 +14,8 @@ input setEquipesRespondedorInput {
     idRespondedor: Int!
     idsEquipes: [Int!]!
 }
+
+type getRespostasEquipePerguntaAtual {
+    pergunta: Pergunta,
+    respostas: [[Pontuacao]]!
+}

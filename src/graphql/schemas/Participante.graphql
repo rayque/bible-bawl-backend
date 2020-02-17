@@ -3,6 +3,7 @@ type Participante {
     nome: String!
     data_nascimento: String!
     status: Status!
+    respostas: [Resposta]
 }
 
 input ParticipanteInput {
