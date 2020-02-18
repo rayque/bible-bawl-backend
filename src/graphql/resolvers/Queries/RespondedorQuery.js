@@ -77,14 +77,17 @@ module.exports = {
                     const participantes = equipe.participantes.map(participante => {
 
                         let respostas = [];
-                        const pergunta = participante.perguntas.filter(pergunta => {
-                            return pergunta.id === perguntaAtual.id;
-                        });
+                        let pergunta = null;
 
-                        respostas.push({
-                            pergunta: perguntaAtual.id,
-                            resposta: pergunta.length ? pergunta[0].ParticipantePergunta.resposta : false,
-                        })
+                        if (perguntaAtual) {                            
+                            pergunta = participante.perguntas.filter(pergunta => {
+                                return pergunta.id === perguntaAtual.id;
+                            });
+                            respostas.push({
+                                pergunta: perguntaAtual.id,
+                                resposta: pergunta.length ? pergunta[0].ParticipantePergunta.resposta : false,
+                            })
+                        }
 
                         return {
                             id: participante.id,
@@ -111,7 +114,6 @@ module.exports = {
 
             })
             .catch(e => {
-                console.log(e);
                 throw new Error('Erro ao buscar respondedor');
             });
     },
