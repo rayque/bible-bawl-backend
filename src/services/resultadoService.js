@@ -55,18 +55,11 @@ class ResultadoService {
             const categoria = await Categoria.findOne({
                 where: {nome: nome_categoria}
             });
-            const statusRespondido = await StatusPergunta.findOne(
-                {
-                    where: {
-                        nome: 'respondido',
-                    }
-                });
 
             const participantes = await Participante.findAll({
                 include: [
                     {
-                        association: 'perguntas',
-                        where: {status_id: statusRespondido.id}
+                        association: 'perguntas'
                     },
                     {
                         association: 'equipe',
@@ -77,12 +70,8 @@ class ResultadoService {
                     }
                 ]
             });
-
+            
             const pontuacoesAndAcertosConsecutivos = await this.getPontuacoesIndividual(participantes);
-            if (!pontuacoesAndAcertosConsecutivos.length) {
-                return [];
-            }
-
             const result = await this.getClassificacao(pontuacoesAndAcertosConsecutivos);
 
             return result.map(classificacao => {

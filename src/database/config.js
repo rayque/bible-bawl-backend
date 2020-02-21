@@ -9,7 +9,7 @@ const runSeed = {
     auxiliares: copaFakeSeed || auxiliaresSeed,
     equipes: copaFakeSeed || equipesSeed,
     copaFake: copaFakeSeed,
-    deletarRespostas: true,
+    deletarRespostas: false,
 };
 
 module.exports = runSeed;
