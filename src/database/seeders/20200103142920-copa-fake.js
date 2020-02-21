@@ -21,7 +21,7 @@ const responderPerguntas = async () => {
 
     const participantes = await Participante.findAll();
 
-    for (let perguntaId = 1; perguntaId <= 5; perguntaId++) {
+    for (let perguntaId = 1; perguntaId <= 20; perguntaId++) {
 
         for (const participante of participantes) {
 

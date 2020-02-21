@@ -159,21 +159,20 @@ class ResultadoService {
                 });
 
                 for (let perguntaId = 1; perguntaId <= qtdPerguntasRespondidas; perguntaId++) {
-
                     participante.perguntas.forEach(pergunta => {
+
                         /* Conta acertos consecutivos do participante */
                         if (pergunta.id === perguntaId) {
                             /* Se acertou a pergunta add ponto em sequência */
                             if (pergunta.ParticipantePergunta.resposta) {
                                 contAcertoSequencia++;
                             } else {
-                                acertosSequencia.push(contAcertoSequencia);
                                 contAcertoSequencia = 0;
                             }
+                            acertosSequencia.push(contAcertoSequencia);
                         }
                     });
                 }
-
                 acertosSequencia = R.uniq(acertosSequencia);
                 const acertos_consecutivos = Math.max(...acertosSequencia);
 

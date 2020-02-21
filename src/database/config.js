@@ -2,8 +2,8 @@
 const copaFakeSeed = false;
 
 /* Gerar seed  somente auxiliares e equipes */
-const auxiliaresSeed = true;
-const equipesSeed = true;
+const auxiliaresSeed = false;
+const equipesSeed = false;
 
 const runSeed = {
     auxiliares: copaFakeSeed || auxiliaresSeed,
