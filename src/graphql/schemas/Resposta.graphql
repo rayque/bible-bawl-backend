@@ -3,3 +3,8 @@ input RespostaInput {
     pergunta_id: Int!
     resposta: Boolean!
 }
+
+type Resposta {
+    pergunta: Int!
+    resposta: Boolean!
+}
