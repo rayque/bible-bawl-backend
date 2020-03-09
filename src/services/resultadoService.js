@@ -135,6 +135,14 @@ class ResultadoService {
     /* Retorna pontuação e acerto consecutivos de cada participante */
     async getPontuacoesIndividual(participantes) {
         try {
+
+            // let participantes = [];
+            // participantes.push(foo[0])
+
+            // Array.prototype.insert = function ( index, item ) {
+            //     this.splice( index, 0, item );
+            // };
+
             const qtdPerguntasRespondidas = await this.getQtdPerguntasRespondidas();
 
             return participantes.map(participante => {
@@ -147,22 +155,70 @@ class ResultadoService {
                     totalPontosParticipante += pergunta.ParticipantePergunta.resposta;
                 });
 
-                for (let perguntaId = 1; perguntaId <= qtdPerguntasRespondidas; perguntaId++) {
-                    participante.perguntas.forEach(pergunta => {
 
-                        /* Conta acertos consecutivos do participante */
-                        if (pergunta.id === perguntaId) {
-                            /* Se acertou a pergunta add ponto em sequência */
-                            if (pergunta.ParticipantePergunta.resposta) {
-                                contAcertoSequencia++;
-                            } else {
-                                contAcertoSequencia = 0;
-                            }
-                            acertosSequencia.push(contAcertoSequencia);
-                        }
-                    });
+
+
+
+                const a = participante.perguntas.map(p => {
+                    return parseInt(p.id);
+                })
+
+
+                let maiorDistancia = 0;
+                const sequencias = [];
+                let ultimaSeq = 0;
+
+
+                for (let i = 0; i < a.length-1; ++i) {
+                    let dist = parseInt(a[i]-a[i+1]); //distancia entre este e o proximo
+
+                    if ((a[i+1] - a[i]) == 1) {
+                        contAcertoSequencia++;
+                    } else {
+                        acertosSequencia.push(contAcertoSequencia);
+                        contAcertoSequencia = 0;
+                    }
+
+                    // if (dist > maiorDistancia) maiorDistancia = dist; //se maior atualiza
+                    // if ((a[i+1] - a[i]) == 1){ //teste para sequencia
+                    //     if (sequencias[ultimaSeq] !== undefined){
+                    //
+                    //         // sequencias[ultimaSeq][] = a[i+1]; //se ja existe uma sequencia acrescente
+                    //         // sequencias[ultimaSeq].push(a[i+1])
+                    //         sequencias.insert(ultimaSeq, i+1);
+                    //     }
+                    //     else { //se é uma nova insere os 2 primeiros elementos
+                    //         // $sequencias[$ultimaSeq][0] = $a[$i];
+                    //         // $sequencias[$ultimaSeq][1] = $a[$i+1];
+                    //         sequencias[ultimaSeq].insert(0, i+1);
+                    //         sequencias[ultimaSeq].insert(1, a[i+1]);
+                    //     }
+                    // } else {
+                    //     ultimaSeq++;
+                    // }
                 }
+
+
+                // console.log(ultimaSeq, sequencias);
+
+                // for (let perguntaId = 1; perguntaId <= qtdPerguntasRespondidas; perguntaId++) {
+                //     participante.perguntas.forEach(pergunta => {
+                //
+                //         /* Conta acertos consecutivos do participante */
+                //         if (pergunta.id === perguntaId) {
+                //             /* Se acertou a pergunta add ponto em sequência */
+                //             if (pergunta.ParticipantePergunta.resposta) {
+                //                 contAcertoSequencia++;
+                //             } else {
+                //                 contAcertoSequencia = 0;
+                //             }
+                //             acertosSequencia.push(contAcertoSequencia);
+                //         }
+                //     });
+                // }
+                console.log(a);
                 acertosSequencia = R.uniq(acertosSequencia);
+                console.log(acertosSequencia);
                 const acertos_consecutivos = Math.max(...acertosSequencia);
 
                 return {
