@@ -14,7 +14,7 @@ const server = new ApolloServer({
 // server.listen();
 
 server
-  .listen()
+  .listen(3001)
   .then(({ url, subscriptionsUrl }) => {
     console.clear();
     console.log('---------------------');
