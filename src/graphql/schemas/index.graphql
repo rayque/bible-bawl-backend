@@ -1,0 +1,15 @@
+#import Usuario, Perfil from 'Usuario.graphql';
+#import Respondedor from 'Respondedor.graphql';
+#import Participante from 'Participante.graphql';
+#import Equipe from 'Equipe.graphql';
+#import Categoria from 'Categoria.graphql';
+#import Resposta from 'Resposta.graphql';
+#import Pergunta from 'Pergunta.graphql';
+#import StatusPergunta from 'StatusPergunta.graphql';
+#import AuthData from 'Auth.graphql';
+
+#import Subscription from 'Subscription.graphql';
+
+#import Query from 'Query.graphql';
+#import Mutation from 'Mutation.graphql';
+

@@ -1,0 +1,32 @@
+type Equipe {
+    id: Int!
+    nome: String!
+    sigla: String
+    participantes: [Participante!]!
+    categoria: Categoria
+}
+
+input EquipeInput {
+    participantes: [ParticipanteInput]
+}
+
+type Pontuacao {
+    nome: String
+    pontuacao: Int
+}
+
+type PontuacaoCategoria {
+    nome: String!
+    descricao: String!
+    equipes: [[Pontuacao]]!
+
+}
+
+type ResultadoCopa {
+    classificacao: Int!
+    nome: String!
+    status_participante: Status
+    pontuacao: Int!
+    acertos_consecutivos: Int
+    acertos_bonus: Int
+}

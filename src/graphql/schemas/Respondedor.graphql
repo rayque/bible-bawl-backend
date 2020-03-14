@@ -1,0 +1,21 @@
+type Respondedor {
+    id: Int!
+    nome: String!
+    cod_acesso: String
+    equipes: [Equipe]!
+}
+
+type EquipesRespondedor {
+    respondedor: Respondedor
+    equipes: [Equipe!]!
+}
+
+input setEquipesRespondedorInput {
+    idRespondedor: Int!
+    idsEquipes: [Int!]!
+}
+
+type getRespostasEquipePerguntaAtual {
+    pergunta: Pergunta,
+    respostas: [[Pontuacao]]!
+}

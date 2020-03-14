@@ -1,0 +1,11 @@
+type Mutation {
+    novoRespondedor(nome: String!): Respondedor
+    novoParticipante(dados: [ParticipanteInput]): [Participante]
+    novaEquipe(dados: [ParticipanteInput]): Equipe
+    setEquipesRespondedor(dados: setEquipesRespondedorInput): EquipesRespondedor
+    setResposta(dados: RespostaInput): Boolean
+    setPerguntaAtual(pergunta: Int): Int!
+    setStatusPergunta(pergunta: Int, status: String!): Boolean!
+    setEditarEquipe(participantes: [EditarParticipanteInput!]!): Boolean!
+    excluirEquipe(equipe_id: Int): Boolean!
+}

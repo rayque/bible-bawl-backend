@@ -1,0 +1,4 @@
+type Subscription {
+    novaPerguntaAtual: Pergunta
+    getPontuacaoEquipesByResposta: [PontuacaoCategoria]!
+}
