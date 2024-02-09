@@ -1,11 +1,10 @@
 const {Participante, StatusPergunta, Pergunta} = require('../../models');
 const PerguntaService = require('../../services/perguntaService');
 const faker = require('faker');
-const runSeed = require('../config');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        if ('development' === process.env.NODE_ENV && runSeed.copaFake) {
+         if ('true' === process.env.APP_COPA_FAKE) {
             await responderPerguntas();
         }
     },

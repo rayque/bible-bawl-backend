@@ -1,13 +1,12 @@
 'use strict';
 const {ParticipantePergunta, StatusPergunta, Pergunta} = require('../../models');
 const {Op} = require('sequelize');
-const runSeed = require('../config');
 
 
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    if (runSeed.deletarRespostas) {
+    if ('true' === process.env.APP_DELETEAR_RESPOSTAS) {
         console.log();
         console.log("======================================");
         console.log("========== DELETAR RESPOSTAS =========");
